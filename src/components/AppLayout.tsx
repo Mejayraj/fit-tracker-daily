@@ -6,10 +6,7 @@ import { Home, Dumbbell, UtensilsCrossed, LineChart, LogOut } from "lucide-react
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { to: "/", label: "Dashboard", icon: Home, end: true },
-  { to: "/workouts", label: "Workouts", icon: Dumbbell },
-  { to: "/food", label: "Food", icon: UtensilsCrossed },
-  { to: "/progress", label: "Progress", icon: LineChart },
+  { to: "/food", label: "Food Log", icon: UtensilsCrossed, end: true },
 ];
 
 export default function AppLayout({ children }: { children: ReactNode }) {
