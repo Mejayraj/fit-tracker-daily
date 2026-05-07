@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Trash2, Plus, Search } from "lucide-react";
 import { format } from "date-fns";
+import FastingTimer from "@/components/FastingTimer";
 
 type FoodLog = {
   id: string;
@@ -154,6 +155,8 @@ export default function Food() {
         </div>
         <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-auto" />
       </div>
+
+      <FastingTimer />
 
       {/* Add food */}
       <Card>
