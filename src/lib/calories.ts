@@ -1,4 +1,4 @@
-// Approximate MET-based calorie calculations
+// MET-based calorie calculations with weighted-rep adjustment
 export const EXERCISE_TYPES = [
   { value: "strength", label: "Strength", met: 5 },
   { value: "cardio", label: "Cardio", met: 8 },
@@ -11,8 +11,15 @@ export const EXERCISE_TYPES = [
   { value: "other", label: "Other", met: 5 },
 ] as const;
 
-const DEFAULT_BODY_WEIGHT_KG = 70;
+export const DEFAULT_BODY_WEIGHT_KG = 70;
 
+/**
+ * Estimate calories burned.
+ * - Cardio / time-based: MET formula → kcal = MET * 3.5 * bodyWeight / 200 * minutes
+ * - Strength (sets/reps/weight): time portion via MET (~3s/rep + 60s rest/set)
+ *   plus mechanical work bonus from weight lifted: ≈ 0.0035 kcal per kg lifted per rep
+ *   (work = sets*reps*weight*displacement, with ~0.5m and ~25% efficiency).
+ */
 export function estimateCaloriesBurned({
   type,
   durationMinutes,
@@ -26,16 +33,19 @@ export function estimateCaloriesBurned({
   sets?: number | null;
   reps?: number | null;
   weight?: number | null;
-  bodyWeightKg?: number;
+  bodyWeightKg?: number | null;
 }) {
   const meta = EXERCISE_TYPES.find((t) => t.value === type) ?? EXERCISE_TYPES[0];
+  const bw = bodyWeightKg && bodyWeightKg > 0 ? bodyWeightKg : DEFAULT_BODY_WEIGHT_KG;
+
   if (durationMinutes && durationMinutes > 0) {
-    return Math.round((meta.met * 3.5 * bodyWeightKg) / 200 * durationMinutes);
+    return Math.round((meta.met * 3.5 * bw) / 200 * durationMinutes);
   }
   if (sets && reps) {
-    // assume ~3 seconds per rep + 60s rest per set
     const minutes = (sets * (reps * 3 + 60)) / 60;
-    return Math.round((meta.met * 3.5 * bodyWeightKg) / 200 * minutes);
+    const baseKcal = (meta.met * 3.5 * bw) / 200 * minutes;
+    const liftBonus = weight && weight > 0 ? sets * reps * weight * 0.0035 : 0;
+    return Math.max(1, Math.round(baseKcal + liftBonus));
   }
   return 0;
 }

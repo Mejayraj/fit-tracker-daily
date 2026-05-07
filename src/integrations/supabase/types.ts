@@ -58,6 +58,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          body_weight_kg: number | null
           calorie_goal: number
           carb_goal: number
           created_at: string
@@ -68,6 +69,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          body_weight_kg?: number | null
           calorie_goal?: number
           carb_goal?: number
           created_at?: string
@@ -78,6 +80,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          body_weight_kg?: number | null
           calorie_goal?: number
           carb_goal?: number
           created_at?: string
@@ -110,6 +113,33 @@ export type Database = {
           logged_at?: string
           user_id?: string
           weight_kg?: number
+        }
+        Relationships: []
+      }
+      workout_routines: {
+        Row: {
+          created_at: string
+          exercises: Json
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          exercises?: Json
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          exercises?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

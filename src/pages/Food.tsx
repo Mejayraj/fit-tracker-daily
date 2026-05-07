@@ -36,6 +36,11 @@ export default function Food() {
   const [grams, setGrams] = useState(100);
   const [meal, setMeal] = useState<(typeof MEALS)[number]>("breakfast");
   const [customName, setCustomName] = useState("");
+  const [customMode, setCustomMode] = useState(false);
+  const [customCals, setCustomCals] = useState<number | "">("");
+  const [customProtein, setCustomProtein] = useState<number | "">("");
+  const [customCarbs, setCustomCarbs] = useState<number | "">("");
+  const [customFat, setCustomFat] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
 
   const results = useMemo(() => searchFoods(query), [query]);
@@ -91,7 +96,12 @@ export default function Food() {
     }
     const macros = selected
       ? scaleFood(selected, grams)
-      : { calories: 0, protein: 0, carbs: 0, fat: 0 };
+      : {
+          calories: Number(customCals) || 0,
+          protein: Number(customProtein) || 0,
+          carbs: Number(customCarbs) || 0,
+          fat: Number(customFat) || 0,
+        };
 
     setLoading(true);
     const { error } = await supabase.from("food_logs").insert({
@@ -107,6 +117,8 @@ export default function Food() {
     toast.success(`Logged ${name}`);
     setSelected(null);
     setCustomName("");
+    setCustomCals(""); setCustomProtein(""); setCustomCarbs(""); setCustomFat("");
+    setCustomMode(false);
     setQuery("");
     setGrams(100);
     loadDay();
@@ -174,10 +186,42 @@ export default function Food() {
             </div>
           )}
 
-          {!selected && !query && (
-            <div>
-              <Label htmlFor="cn" className="text-xs">Or custom food name (no macros)</Label>
-              <Input id="cn" placeholder="Custom food" value={customName} onChange={(e) => setCustomName(e.target.value)} maxLength={120} />
+          {!selected && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="cn" className="text-xs">Or add a custom food</Label>
+                <button
+                  type="button"
+                  onClick={() => setCustomMode((v) => !v)}
+                  className="text-xs text-primary hover:underline"
+                >
+                  {customMode ? "Cancel custom" : "+ Custom food"}
+                </button>
+              </div>
+              {customMode && (
+                <div className="space-y-3 rounded-md border border-border bg-secondary/40 p-3">
+                  <Input id="cn" placeholder="Custom food name" value={customName} onChange={(e) => setCustomName(e.target.value)} maxLength={120} />
+                  <p className="text-xs text-muted-foreground">Enter macros for the full portion you logged.</p>
+                  <div className="grid grid-cols-4 gap-2">
+                    <div>
+                      <Label htmlFor="ccal" className="text-xs">Calories</Label>
+                      <Input id="ccal" type="number" min={0} max={10000} value={customCals} onChange={(e) => setCustomCals(e.target.value === "" ? "" : Number(e.target.value))} />
+                    </div>
+                    <div>
+                      <Label htmlFor="cp" className="text-xs">Protein</Label>
+                      <Input id="cp" type="number" min={0} max={1000} step="0.1" value={customProtein} onChange={(e) => setCustomProtein(e.target.value === "" ? "" : Number(e.target.value))} />
+                    </div>
+                    <div>
+                      <Label htmlFor="cc" className="text-xs">Carbs</Label>
+                      <Input id="cc" type="number" min={0} max={1000} step="0.1" value={customCarbs} onChange={(e) => setCustomCarbs(e.target.value === "" ? "" : Number(e.target.value))} />
+                    </div>
+                    <div>
+                      <Label htmlFor="cf" className="text-xs">Fat</Label>
+                      <Input id="cf" type="number" min={0} max={1000} step="0.1" value={customFat} onChange={(e) => setCustomFat(e.target.value === "" ? "" : Number(e.target.value))} />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
