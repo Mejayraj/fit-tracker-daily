@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import { Home, Dumbbell, UtensilsCrossed, LineChart, LogOut } from "lucide-react";
+import { Home, Dumbbell, UtensilsCrossed, LineChart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ProfileMenu from "@/components/ProfileMenu";
 
 const tabs = [
   { to: "/", label: "Dashboard", icon: Home, end: true },
@@ -13,8 +13,7 @@ const tabs = [
 ];
 
 export default function AppLayout({ children }: { children: ReactNode }) {
-  const { signOut, user } = useAuth();
-  const nav = useNavigate();
+  const { user } = useAuth();
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0 md:pl-60">
       {/* Sidebar (md+) */}
@@ -43,12 +42,14 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           ))}
         </nav>
         <div className="p-3 border-t">
-          <p className="text-xs text-muted-foreground truncate px-2 mb-2">{user?.email}</p>
-          <Button variant="ghost" size="sm" className="w-full justify-start" onClick={async () => { await signOut(); nav("/auth"); }}>
-            <LogOut className="h-4 w-4 mr-2" /> Sign out
-          </Button>
+          <p className="text-xs text-muted-foreground truncate px-2">{user?.email}</p>
         </div>
       </aside>
+
+      {/* Desktop top bar */}
+      <header className="hidden md:flex sticky top-0 z-10 bg-background/70 backdrop-blur border-b px-6 py-3 items-center justify-end">
+        <ProfileMenu />
+      </header>
 
       {/* Mobile top bar */}
       <header className="md:hidden sticky top-0 z-10 bg-card/95 backdrop-blur border-b px-4 py-3 flex items-center justify-between">
@@ -58,9 +59,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </div>
           <span className="font-semibold">FitTrack</span>
         </div>
-        <Button variant="ghost" size="icon" onClick={async () => { await signOut(); nav("/auth"); }}>
-          <LogOut className="h-4 w-4" />
-        </Button>
+        <ProfileMenu />
       </header>
 
       <main className="p-4 md:p-8 max-w-5xl mx-auto">{children}</main>
