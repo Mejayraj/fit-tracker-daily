@@ -49,13 +49,13 @@ export default function Dashboard() {
             <Activity className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">{profile?.display_name || "Athlete"}</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Hi, {profile?.display_name || "Athlete"}</h1>
             <p className="text-sm text-muted-foreground">{format(new Date(), "EEEE, MMM d")}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" onClick={() => nav("/workouts")} className="gap-2">
-            <Dumbbell className="h-4 w-4 text-accent" /> Log Workout
+          <Button onClick={() => nav("/workouts")} className="gap-2 bg-gradient-accent text-accent-foreground shadow-glow-accent hover:opacity-90 animate-pulse">
+            <Dumbbell className="h-4 w-4" /> Log Workout
           </Button>
           <Button onClick={() => nav("/food")} className="gap-2 bg-gradient-primary text-primary-foreground shadow-glow-primary hover:opacity-90">
             <Plus className="h-4 w-4" /> Log Meal
