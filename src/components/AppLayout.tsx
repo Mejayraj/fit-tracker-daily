@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Home, Dumbbell, UtensilsCrossed, LineChart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ProfileMenu from "@/components/ProfileMenu";
+import logo from "@/assets/logo.png";
 
 const tabs = [
   { to: "/", label: "Dashboard", icon: Home, end: true },
@@ -19,9 +20,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       {/* Sidebar (md+) */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 w-60 flex-col border-r bg-card">
         <div className="p-5 flex items-center gap-2">
-          <div className="h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
-            <Dumbbell className="h-5 w-5" />
-          </div>
+          <img src={logo} alt="Get Fit logo" className="h-9 w-9 rounded-lg" />
           <span className="font-semibold text-lg">Get Fit</span>
         </div>
         <nav className="flex-1 px-3 space-y-1">
@@ -54,9 +53,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       {/* Mobile top bar */}
       <header className="md:hidden sticky top-0 z-10 bg-card/95 backdrop-blur border-b px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
-            <Dumbbell className="h-4 w-4" />
-          </div>
+          <img src={logo} alt="Get Fit logo" className="h-8 w-8 rounded-md" />
           <span className="font-semibold">Get Fit</span>
         </div>
         <ProfileMenu />
