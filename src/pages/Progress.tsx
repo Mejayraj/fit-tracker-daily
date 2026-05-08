@@ -15,6 +15,7 @@ export default function ProgressPage() {
   const [foods, setFoods] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [weights, setWeights] = useState<any[]>([]);
+  const [fasts, setFasts] = useState<any[]>([]);
   const [w, setW] = useState<number | "">("");
 
   const days = useMemo(() => Array.from({ length: 7 }).map((_, i) => format(subDays(new Date(), 6 - i), "yyyy-MM-dd")), []);
@@ -22,14 +23,17 @@ export default function ProgressPage() {
   const load = async () => {
     if (!user) return;
     const since = days[0];
-    const [f, wo, wt] = await Promise.all([
+    const sinceIso = new Date(since + "T00:00:00").toISOString();
+    const [f, wo, wt, fs] = await Promise.all([
       supabase.from("food_logs").select("logged_at,calories,protein").eq("user_id", user.id).gte("logged_at", since),
       supabase.from("workouts").select("logged_at,calories_burned").eq("user_id", user.id).gte("logged_at", since),
       supabase.from("weight_logs").select("*").eq("user_id", user.id).order("logged_at", { ascending: true }).limit(60),
+      supabase.from("fasting_sessions").select("start_at,end_at").eq("user_id", user.id).not("end_at", "is", null).gte("start_at", sinceIso),
     ]);
     setFoods(f.data ?? []);
     setWorkouts(wo.data ?? []);
     setWeights(wt.data ?? []);
+    setFasts(fs.data ?? []);
   };
   useEffect(() => { load(); }, [user]);
 
@@ -62,46 +66,19 @@ export default function ProgressPage() {
 
   const weightChart = weights.map((x) => ({ day: format(new Date(x.logged_at), "MMM d"), kg: Number(x.weight_kg) }));
 
+  const fastingData = days.map((d) => {
+    const hours = fasts
+      .filter((x) => format(new Date(x.start_at), "yyyy-MM-dd") === d)
+      .reduce((s, x) => s + (new Date(x.end_at).getTime() - new Date(x.start_at).getTime()) / 3_600_000, 0);
+    return { day: format(new Date(d), "EEE"), hours: Number(hours.toFixed(1)) };
+  });
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Progress</h1>
         <p className="text-sm text-muted-foreground">Last 7 days at a glance.</p>
       </div>
-
-      <Card className="shadow-card">
-        <CardHeader><CardTitle className="text-lg">Net calories</CardTitle></CardHeader>
-        <CardContent className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-              <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
-              <Bar dataKey="net" radius={[6, 6, 0, 0]}>
-                {data.map((d, i) => (
-                  <Cell key={i} fill={d.net >= 0 ? "hsl(var(--primary))" : "hsl(var(--accent))"} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-card">
-        <CardHeader><CardTitle className="text-lg">Protein intake (g)</CardTitle></CardHeader>
-        <CardContent className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-              <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
-              <Bar dataKey="protein" fill="hsl(var(--accent))" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
 
       <Card className="shadow-card">
         <CardHeader><CardTitle className="text-lg flex items-center gap-2"><Scale className="h-5 w-5 text-primary" /> Weight</CardTitle></CardHeader>
@@ -140,6 +117,55 @@ export default function ProgressPage() {
             ))}
             {weights.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">No weight logs yet.</p>}
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="shadow-card">
+        <CardHeader><CardTitle className="text-lg">Net calories</CardTitle></CardHeader>
+        <CardContent className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+              <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
+              <Bar dataKey="net" radius={[6, 6, 0, 0]}>
+                {data.map((d, i) => (
+                  <Cell key={i} fill={d.net >= 0 ? "hsl(var(--primary))" : "hsl(var(--accent))"} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      <Card className="shadow-card">
+        <CardHeader><CardTitle className="text-lg">Protein intake (g)</CardTitle></CardHeader>
+        <CardContent className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+              <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
+              <Bar dataKey="protein" fill="hsl(var(--accent))" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      <Card className="shadow-card">
+        <CardHeader><CardTitle className="text-lg">Fasting (hours)</CardTitle></CardHeader>
+        <CardContent className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={fastingData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+              <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+              <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
+              <Bar dataKey="hours" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
     </div>

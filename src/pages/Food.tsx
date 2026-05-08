@@ -156,8 +156,6 @@ export default function Food() {
         <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-auto" />
       </div>
 
-      <FastingTimer />
-
       {/* Add food */}
       <Card>
         <CardHeader><CardTitle className="text-lg">Add a food</CardTitle></CardHeader>
@@ -337,6 +335,8 @@ export default function Food() {
           ))}
         </CardContent>
       </Card>
+
+      <FastingTimer />
     </div>
   );
 }

@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Dumbbell } from "lucide-react";
+import { Dumbbell, Eye, EyeOff } from "lucide-react";
 
 export default function Auth() {
   const nav = useNavigate();
@@ -17,6 +17,8 @@ export default function Auth() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [showPwIn, setShowPwIn] = useState(false);
+  const [showPwUp, setShowPwUp] = useState(false);
 
   useEffect(() => {
     if (!loading && user) nav("/", { replace: true });
@@ -67,7 +69,15 @@ export default function Auth() {
             <TabsContent value="signin">
               <form onSubmit={signIn} className="space-y-3 mt-4">
                 <div><Label htmlFor="ei">Email</Label><Input id="ei" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-                <div><Label htmlFor="pi">Password</Label><Input id="pi" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+                <div>
+                  <Label htmlFor="pi">Password</Label>
+                  <div className="relative">
+                    <Input id="pi" type={showPwIn ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
+                    <button type="button" onClick={() => setShowPwIn((v) => !v)} aria-label={showPwIn ? "Hide password" : "Show password"} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                      {showPwIn ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
                 <Button type="submit" className="w-full" disabled={busy}>{busy ? "Signing in..." : "Sign In"}</Button>
               </form>
             </TabsContent>
@@ -75,7 +85,15 @@ export default function Auth() {
               <form onSubmit={signUp} className="space-y-3 mt-4">
                 <div><Label htmlFor="n">Name</Label><Input id="n" value={name} onChange={(e) => setName(e.target.value)} /></div>
                 <div><Label htmlFor="eu">Email</Label><Input id="eu" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-                <div><Label htmlFor="pu">Password</Label><Input id="pu" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+                <div>
+                  <Label htmlFor="pu">Password</Label>
+                  <div className="relative">
+                    <Input id="pu" type={showPwUp ? "text" : "password"} required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
+                    <button type="button" onClick={() => setShowPwUp((v) => !v)} aria-label={showPwUp ? "Hide password" : "Show password"} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                      {showPwUp ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
                 <Button type="submit" className="w-full" disabled={busy}>{busy ? "Creating..." : "Create Account"}</Button>
               </form>
             </TabsContent>
