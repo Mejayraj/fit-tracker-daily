@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Dumbbell, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 export default function Auth() {
   const nav = useNavigate();
@@ -51,13 +52,24 @@ export default function Auth() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background to-secondary">
-      <Card className="w-full max-w-md shadow-elegant">
+    <main className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
+      {/* Dark neon gradient background */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse at 20% 15%, hsl(130 95% 35% / 0.45), transparent 55%), radial-gradient(ellipse at 85% 85%, hsl(280 95% 45% / 0.45), transparent 55%), linear-gradient(135deg, hsl(150 40% 4%), hsl(260 50% 6%))",
+        }}
+      />
+      {/* Subtle floating glows */}
+      <div aria-hidden className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/20 blur-3xl -z-10" />
+      <div aria-hidden className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl -z-10" />
+
+      <Card className="w-full max-w-md shadow-elegant border-white/10 bg-white/5 backdrop-blur-xl ring-1 ring-white/10">
         <CardHeader className="text-center">
-          <div className="mx-auto h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center mb-2">
-            <Dumbbell className="h-6 w-6" />
-          </div>
-          <CardTitle>Get Fit</CardTitle>
+          <img src={logo} alt="Get Fit logo" className="mx-auto h-16 w-16 rounded-xl mb-2 drop-shadow-[0_0_18px_hsl(var(--primary)/0.6)]" />
+          <CardTitle className="text-glow-primary">Get Fit</CardTitle>
           <CardDescription>Your personal fitness & nutrition log</CardDescription>
         </CardHeader>
         <CardContent>
@@ -98,6 +110,9 @@ export default function Auth() {
               </form>
             </TabsContent>
           </Tabs>
+          <p className="text-center text-xs text-muted-foreground mt-6">
+            Created by <span className="font-semibold text-foreground">Mejayraj.</span>
+          </p>
         </CardContent>
       </Card>
     </main>
