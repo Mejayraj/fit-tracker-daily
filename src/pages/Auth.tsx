@@ -10,6 +10,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import logo from "@/assets/logo.png";
+import bg1 from "@/assets/auth-bg.jpg";
+import bg2 from "@/assets/auth-bg-2.jpg";
+import bg3 from "@/assets/auth-bg-3.jpg";
 
 export default function Auth() {
   const nav = useNavigate();
@@ -20,6 +23,13 @@ export default function Auth() {
   const [busy, setBusy] = useState(false);
   const [showPwIn, setShowPwIn] = useState(false);
   const [showPwUp, setShowPwUp] = useState(false);
+  const bgs = [bg1, bg2, bg3];
+  const [bgIdx, setBgIdx] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setBgIdx((i) => (i + 1) % bgs.length), 6000);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     if (!loading && user) nav("/", { replace: true });
@@ -53,20 +63,27 @@ export default function Auth() {
 
   return (
     <main className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
-      {/* Dark neon gradient background */}
+      {/* Athlete photo slideshow */}
+      {bgs.map((src, i) => (
+        <img
+          key={src}
+          src={src}
+          alt=""
+          aria-hidden
+          className={`absolute inset-0 -z-20 h-full w-full object-cover transition-opacity duration-[1500ms] ${i === bgIdx ? "opacity-100" : "opacity-0"}`}
+        />
+      ))}
+      {/* Dark neon overlay tint */}
       <div
         aria-hidden
         className="absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(ellipse at 20% 15%, hsl(130 95% 35% / 0.45), transparent 55%), radial-gradient(ellipse at 85% 85%, hsl(280 95% 45% / 0.45), transparent 55%), linear-gradient(135deg, hsl(150 40% 4%), hsl(260 50% 6%))",
+            "radial-gradient(ellipse at 20% 15%, hsl(130 95% 35% / 0.35), transparent 55%), radial-gradient(ellipse at 85% 85%, hsl(280 95% 45% / 0.35), transparent 55%), linear-gradient(180deg, hsl(0 0% 0% / 0.55), hsl(0 0% 0% / 0.7))",
         }}
       />
-      {/* Subtle floating glows */}
-      <div aria-hidden className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/20 blur-3xl -z-10" />
-      <div aria-hidden className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl -z-10" />
 
-      <Card className="w-full max-w-md shadow-elegant border-white/10 bg-white/5 backdrop-blur-xl ring-1 ring-white/10">
+      <Card className="w-full max-w-md shadow-elegant border-white/15 bg-white/10 backdrop-blur-2xl ring-1 ring-white/15">
         <CardHeader className="text-center">
           <img src={logo} alt="Get Fit logo" className="mx-auto h-16 w-16 rounded-xl mb-2 drop-shadow-[0_0_18px_hsl(var(--primary)/0.6)]" />
           <CardTitle className="text-glow-primary">Get Fit</CardTitle>
