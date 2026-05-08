@@ -22,7 +22,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <div className="h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
             <Dumbbell className="h-5 w-5" />
           </div>
-          <span className="font-semibold text-lg">FitTrack</span>
+          <span className="font-semibold text-lg">Get Fit</span>
         </div>
         <nav className="flex-1 px-3 space-y-1">
           {tabs.map((t) => (
@@ -57,7 +57,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
             <Dumbbell className="h-4 w-4" />
           </div>
-          <span className="font-semibold">FitTrack</span>
+          <span className="font-semibold">Get Fit</span>
         </div>
         <ProfileMenu />
       </header>

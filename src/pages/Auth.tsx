@@ -55,7 +55,7 @@ export default function Auth() {
           <div className="mx-auto h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center mb-2">
             <Dumbbell className="h-6 w-6" />
           </div>
-          <CardTitle>FitTrack</CardTitle>
+          <CardTitle>Get Fit</CardTitle>
           <CardDescription>Your personal fitness & nutrition log</CardDescription>
         </CardHeader>
         <CardContent>
