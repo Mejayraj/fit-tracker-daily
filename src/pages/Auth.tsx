@@ -42,7 +42,10 @@ export default function Auth() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) toast.error(error.message);
-    else nav("/", { replace: true });
+    else {
+      localStorage.setItem("rememberMe", rememberMe ? "true" : "false");
+      nav("/", { replace: true });
+    }
   };
 
   const signUp = async (e: React.FormEvent) => {
