@@ -23,6 +23,7 @@ export default function Auth() {
   const [busy, setBusy] = useState(false);
   const [showPwIn, setShowPwIn] = useState(false);
   const [showPwUp, setShowPwUp] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const bgs = [bg1, bg2, bg3];
   const [bgIdx, setBgIdx] = useState(0);
 
