@@ -107,6 +107,16 @@ export default function Auth() {
                     </button>
                   </div>
                 </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    id="remember"
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="h-4 w-4 rounded border-muted-foreground/30 bg-transparent accent-primary"
+                  />
+                  <Label htmlFor="remember" className="text-sm font-normal cursor-pointer">Remember me</Label>
+                </div>
                 <Button type="submit" className="w-full" disabled={busy}>{busy ? "Signing in..." : "Sign In"}</Button>
               </form>
             </TabsContent>
