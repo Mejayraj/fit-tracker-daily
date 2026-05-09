@@ -116,6 +116,45 @@ export type Database = {
         }
         Relationships: []
       }
+      strava_connections: {
+        Row: {
+          access_token: string
+          athlete_firstname: string | null
+          athlete_id: number
+          athlete_lastname: string | null
+          created_at: string
+          expires_at: string
+          refresh_token: string
+          scope: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          athlete_firstname?: string | null
+          athlete_id: number
+          athlete_lastname?: string | null
+          created_at?: string
+          expires_at: string
+          refresh_token: string
+          scope?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          athlete_firstname?: string | null
+          athlete_id?: number
+          athlete_lastname?: string | null
+          created_at?: string
+          expires_at?: string
+          refresh_token?: string
+          scope?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       weight_logs: {
         Row: {
           created_at: string
