@@ -23,6 +23,7 @@ export default function Auth() {
   const [busy, setBusy] = useState(false);
   const [showPwIn, setShowPwIn] = useState(false);
   const [showPwUp, setShowPwUp] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const bgs = [bg1, bg2, bg3];
   const [bgIdx, setBgIdx] = useState(0);
 
@@ -41,7 +42,10 @@ export default function Auth() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) toast.error(error.message);
-    else nav("/", { replace: true });
+    else {
+      localStorage.setItem("rememberMe", rememberMe ? "true" : "false");
+      nav("/", { replace: true });
+    }
   };
 
   const signUp = async (e: React.FormEvent) => {
@@ -73,14 +77,10 @@ export default function Auth() {
           className={`absolute inset-0 -z-20 h-full w-full object-cover transition-opacity duration-[1500ms] ${i === bgIdx ? "opacity-100" : "opacity-0"}`}
         />
       ))}
-      {/* Dark neon overlay tint */}
+      {/* Simple dark overlay */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(ellipse at 20% 15%, hsl(130 95% 35% / 0.35), transparent 55%), radial-gradient(ellipse at 85% 85%, hsl(280 95% 45% / 0.35), transparent 55%), linear-gradient(180deg, hsl(0 0% 0% / 0.55), hsl(0 0% 0% / 0.7))",
-        }}
+        className="absolute inset-0 -z-10 bg-black/60"
       />
 
       <Card className="w-full max-w-md shadow-elegant border-white/15 bg-white/10 backdrop-blur-2xl ring-1 ring-white/15">
@@ -106,6 +106,16 @@ export default function Auth() {
                       {showPwIn ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    id="remember"
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="h-4 w-4 rounded border-muted-foreground/30 bg-transparent accent-primary"
+                  />
+                  <Label htmlFor="remember" className="text-sm font-normal cursor-pointer">Remember me</Label>
                 </div>
                 <Button type="submit" className="w-full" disabled={busy}>{busy ? "Signing in..." : "Sign In"}</Button>
               </form>
