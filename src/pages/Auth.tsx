@@ -77,14 +77,10 @@ export default function Auth() {
           className={`absolute inset-0 -z-20 h-full w-full object-cover transition-opacity duration-[1500ms] ${i === bgIdx ? "opacity-100" : "opacity-0"}`}
         />
       ))}
-      {/* Dark neon overlay tint */}
+      {/* Simple dark overlay */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(ellipse at 20% 15%, hsl(130 95% 35% / 0.35), transparent 55%), radial-gradient(ellipse at 85% 85%, hsl(280 95% 45% / 0.35), transparent 55%), linear-gradient(180deg, hsl(0 0% 0% / 0.55), hsl(0 0% 0% / 0.7))",
-        }}
+        className="absolute inset-0 -z-10 bg-black/60"
       />
 
       <Card className="w-full max-w-md shadow-elegant border-white/15 bg-white/10 backdrop-blur-2xl ring-1 ring-white/15">
