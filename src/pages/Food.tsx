@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Trash2, Plus, Search } from "lucide-react";
 import { format } from "date-fns";
 import FastingTimer from "@/components/FastingTimer";
+import UsdaFoodSearch from "@/components/UsdaFoodSearch";
 
 type FoodLog = {
   id: string;
@@ -160,6 +161,11 @@ export default function Food() {
       <Card>
         <CardHeader><CardTitle className="text-lg">Add a food</CardTitle></CardHeader>
         <CardContent className="space-y-4">
+          <UsdaFoodSearch date={date} onLogged={loadDay} />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+            <div className="relative flex justify-center text-xs"><span className="bg-card px-2 text-muted-foreground">or quick add</span></div>
+          </div>
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
