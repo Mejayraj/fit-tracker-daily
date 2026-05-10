@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Dumbbell, Trash2, Plus, Flame, ClipboardList, Search, Save, X, Check } from "lucide-react";
 import { EXERCISE_TYPES, estimateCaloriesBurned } from "@/lib/calories";
+import StravaActivities from "@/components/StravaActivities";
 
 type Workout = {
   id: string; exercise_type: string; exercise_name: string;
@@ -301,6 +302,9 @@ export default function Workouts() {
           ))}
         </div>
       </section>
+
+      {/* Strava activities */}
+      <StravaActivities />
 
       {/* Routine builder */}
       <RoutineBuilder
