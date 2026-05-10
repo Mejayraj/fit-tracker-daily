@@ -66,15 +66,22 @@ Deno.serve(async (req) => {
     return json({ error: "Strava API error", details: text }, 502);
   }
   const activities = await actRes.json();
-  const mapped = (activities as any[]).map((a) => ({
-    id: a.id,
-    name: a.name,
-    sport_type: a.sport_type ?? a.type,
-    start_date: a.start_date_local ?? a.start_date,
-    duration_minutes: Math.round((a.moving_time ?? 0) / 60),
-    calories: a.calories ?? a.kilojoules ? Math.round(a.kilojoules ?? 0) : null,
-    distance_km: a.distance ? Math.round((a.distance / 1000) * 10) / 10 : null,
-  }));
+  const mapped = (activities as any[]).map((a) => {
+    const calories = a.calories != null
+      ? Math.round(a.calories)
+      : a.kilojoules != null
+        ? Math.round(a.kilojoules)
+        : null;
+    return {
+      id: a.id,
+      name: a.name,
+      sport_type: a.sport_type ?? a.type,
+      start_date: a.start_date_local ?? a.start_date,
+      duration_minutes: Math.round((a.moving_time ?? 0) / 60),
+      calories,
+      distance_km: a.distance ? Math.round((a.distance / 1000) * 10) / 10 : null,
+    };
+  });
 
   return json({ connected: true, activities: mapped });
 });
