@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Dumbbell, Trash2, Plus, Flame, ClipboardList, Search, Save, X, Check } from "lucide-react";
+import { Dumbbell, Trash2, Plus, Flame, ClipboardList, Search, Save, X, Check, Bike, Footprints, Waves, Mountain, Activity } from "lucide-react";
 import { EXERCISE_TYPES, estimateCaloriesBurned } from "@/lib/calories";
 import StravaActivities from "@/components/StravaActivities";
 
@@ -37,12 +37,32 @@ type Routine = {
 
 const CARDIO_TYPES = ["cardio", "running", "cycling", "yoga", "hiit", "walking", "swimming"];
 
+type StravaActivity = {
+  id: number;
+  name: string;
+  sport_type: string;
+  start_date: string;
+  duration_minutes: number;
+  calories: number | null;
+};
+
+const sportIcon = (sport: string) => {
+  const s = sport.toLowerCase();
+  if (s.includes("ride") || s.includes("cycl")) return Bike;
+  if (s.includes("run") || s.includes("walk")) return Footprints;
+  if (s.includes("swim")) return Waves;
+  if (s.includes("hike") || s.includes("climb")) return Mountain;
+  if (s.includes("weight") || s.includes("workout") || s.includes("crossfit")) return Dumbbell;
+  return Activity;
+};
+
 export default function Workouts() {
   const { user } = useAuth();
   const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [list, setList] = useState<Workout[]>([]);
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [bodyWeight, setBodyWeight] = useState<number | null>(null);
+  const [stravaToday, setStravaToday] = useState<StravaActivity[]>([]);
 
   // log form
   const [type, setType] = useState("strength");
@@ -85,6 +105,17 @@ export default function Workouts() {
 
   useEffect(() => { loadDay(); }, [user, date]);
   useEffect(() => { loadRoutines(); loadProfile(); }, [user]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase.functions.invoke("strava-activities");
+      if (cancelled || error || !data?.connected) { setStravaToday([]); return; }
+      const acts: StravaActivity[] = data.activities ?? [];
+      setStravaToday(acts.filter((a) => format(new Date(a.start_date), "yyyy-MM-dd") === date));
+    })();
+    return () => { cancelled = true; };
+  }, [user, date]);
 
   const submit = async (e?: React.FormEvent, override?: Partial<RoutineExercise> & { name?: string }) => {
     e?.preventDefault();
@@ -130,7 +161,8 @@ export default function Workouts() {
     await supabase.from("profiles").update({ body_weight_kg: v }).eq("id", user.id);
   };
 
-  const totalBurn = list.reduce((s, w) => s + w.calories_burned, 0);
+  const stravaBurn = stravaToday.reduce((s, a) => s + (a.calories ?? 0), 0);
+  const totalBurn = list.reduce((s, w) => s + w.calories_burned, 0) + stravaBurn;
 
   // Save current day's workouts as a routine
   const saveTodayAsRoutine = async () => {
@@ -279,11 +311,32 @@ export default function Workouts() {
           <span className="text-accent font-semibold flex items-center gap-1 text-sm"><Flame className="h-4 w-4" /> {totalBurn} kcal</span>
         </div>
         <div className="space-y-2">
-          {list.length === 0 && (
+          {list.length === 0 && stravaToday.length === 0 && (
             <div className="rounded-xl bg-secondary/30 border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
               No workouts logged yet.
             </div>
           )}
+          {stravaToday.map((a) => {
+            const Icon = sportIcon(a.sport_type);
+            return (
+              <div key={`strava-${a.id}`} className="flex items-center justify-between gap-2 rounded-xl bg-secondary/60 px-3 py-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="h-9 w-9 rounded-lg bg-[hsl(16,100%,50%)]/15 text-[hsl(16,100%,50%)] flex items-center justify-center shrink-0">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-medium text-sm truncate">{a.name}</div>
+                    <div className="text-xs text-muted-foreground capitalize truncate">
+                      {a.duration_minutes} min · {a.sport_type} · Strava
+                    </div>
+                  </div>
+                </div>
+                {a.calories != null && (
+                  <span className="text-accent font-semibold text-sm shrink-0">-{a.calories}</span>
+                )}
+              </div>
+            );
+          })}
           {list.map((w) => (
             <div key={w.id} className="flex items-center justify-between gap-2 rounded-xl bg-secondary/60 px-3 py-3">
               <div className="min-w-0">
@@ -304,7 +357,7 @@ export default function Workouts() {
       </section>
 
       {/* Strava activities */}
-      <StravaActivities />
+      <StravaActivities excludeDate={date} />
 
       {/* Routine builder */}
       <RoutineBuilder
