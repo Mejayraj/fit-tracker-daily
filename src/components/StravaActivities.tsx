@@ -24,7 +24,7 @@ const sportIcon = (sport: string) => {
   return Activity;
 };
 
-export default function StravaActivities() {
+export default function StravaActivities({ excludeDate }: { excludeDate?: string } = {}) {
   const [activities, setActivities] = useState<StravaActivity[] | null>(null);
   const [connected, setConnected] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -44,6 +44,11 @@ export default function StravaActivities() {
   };
 
   useEffect(() => { load(); }, []);
+
+  const visible = (activities ?? []).filter((a) => {
+    if (!excludeDate) return true;
+    return format(parseISO(a.start_date), "yyyy-MM-dd") !== excludeDate;
+  });
 
   return (
     <section className="space-y-2">
