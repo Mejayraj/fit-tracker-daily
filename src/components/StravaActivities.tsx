@@ -74,15 +74,17 @@ export default function StravaActivities({ excludeDate }: { excludeDate?: string
         </div>
       )}
 
-      {connected && !error && activities && activities.length === 0 && !loading && (
+      {connected && !error && activities && visible.length === 0 && !loading && (
         <div className="rounded-xl bg-secondary/30 border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-          No Strava activities yet. Once you record a workout on Strava, it will show up here.
+          {excludeDate
+            ? "No older Strava activities to show."
+            : "No Strava activities yet. Once you record a workout on Strava, it will show up here."}
         </div>
       )}
 
-      {connected && activities && activities.length > 0 && (
+      {connected && visible.length > 0 && (
         <div className="grid gap-2">
-          {activities.map((a) => {
+          {visible.map((a) => {
             const Icon = sportIcon(a.sport_type);
             return (
               <div key={a.id} className="rounded-xl bg-secondary/60 px-3 py-3 flex items-center gap-3">
