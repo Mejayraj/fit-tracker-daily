@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Home, Dumbbell, UtensilsCrossed, LineChart } from "lucide-react";
+import { Home, Dumbbell, UtensilsCrossed, LineChart, Library } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ProfileMenu from "@/components/ProfileMenu";
 import logo from "@/assets/logo.png";
@@ -9,6 +9,7 @@ import logo from "@/assets/logo.png";
 const tabs = [
   { to: "/", label: "Dashboard", icon: Home, end: true },
   { to: "/workouts", label: "Workouts", icon: Dumbbell },
+  { to: "/exercises", label: "Exercises", icon: Library },
   { to: "/food", label: "Food", icon: UtensilsCrossed },
   { to: "/progress", label: "Progress", icon: LineChart },
 ];
@@ -63,7 +64,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 bg-card border-t z-10">
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-5">
           {tabs.map((t) => (
             <NavLink
               key={t.to}
