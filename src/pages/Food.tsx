@@ -13,6 +13,8 @@ import { Trash2, Plus, Search } from "lucide-react";
 import { format } from "date-fns";
 import FastingTimer from "@/components/FastingTimer";
 import UsdaFoodSearch from "@/components/UsdaFoodSearch";
+import BarcodeScanner from "@/components/BarcodeScanner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type FoodLog = {
   id: string;
@@ -161,7 +163,18 @@ export default function Food() {
       <Card>
         <CardHeader><CardTitle className="text-lg">Add a food</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <UsdaFoodSearch date={date} onLogged={loadDay} />
+          <Tabs defaultValue="search" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="search">Search</TabsTrigger>
+              <TabsTrigger value="scan">Scan barcode</TabsTrigger>
+            </TabsList>
+            <TabsContent value="search" className="mt-3">
+              <UsdaFoodSearch date={date} onLogged={loadDay} />
+            </TabsContent>
+            <TabsContent value="scan" className="mt-3">
+              <BarcodeScanner date={date} onLogged={loadDay} />
+            </TabsContent>
+          </Tabs>
           <div className="relative">
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
             <div className="relative flex justify-center text-xs"><span className="bg-card px-2 text-muted-foreground">or quick add</span></div>
