@@ -11,7 +11,7 @@ import { LogOut, Palette, Sun, Moon, Sparkles, User, Check, Activity, Loader2 } 
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import HevyConnect from "@/components/HevyConnect";
+import HevyConnect, { HevyKeyDialog } from "@/components/HevyConnect";
 import { useHevy } from "@/hooks/useHevy";
 
 const THEMES: { id: ThemeName; label: string; icon: any }[] = [
@@ -31,6 +31,7 @@ export default function ProfileMenu() {
   const [strava, setStrava] = useState<{ connected: boolean; athlete?: { firstname?: string; lastname?: string } | null } | null>(null);
   const [stravaBusy, setStravaBusy] = useState(false);
   const { status: hevyStatus, loadStatus: loadHevy } = useHevy(user?.id);
+  const [hevyDialog, setHevyDialog] = useState(false);
 
   const loadStrava = async () => {
     try {
@@ -80,6 +81,7 @@ export default function ProfileMenu() {
   };
 
   return (
+    <>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 bg-secondary text-foreground hover:bg-secondary/80">
@@ -153,12 +155,18 @@ export default function ProfileMenu() {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">Hevy</DropdownMenuLabel>
-        <HevyConnect status={hevyStatus} onChange={() => { loadHevy(); }} />
+        <HevyConnect
+          status={hevyStatus}
+          onChange={() => { loadHevy(); }}
+          onRequestConnect={() => setHevyDialog(true)}
+        />
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={async () => { await signOut(); nav("/auth"); }} className="cursor-pointer">
           <LogOut className="h-4 w-4 mr-2" /> Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    <HevyKeyDialog open={hevyDialog} onOpenChange={setHevyDialog} onConnected={() => loadHevy()} />
+    </>
   );
 }
