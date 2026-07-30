@@ -13,6 +13,31 @@ export const EXERCISE_TYPES = [
 
 export const DEFAULT_BODY_WEIGHT_KG = 70;
 
+/** kcal per (kg lifted x rep): 0.5 m displacement, 9.81 m/s², 22% efficiency. */
+export const KCAL_PER_KG_REP = (0.5 * 9.81) / 4184 / 0.22;
+const BODYWEIGHT_LOAD_FACTOR = 0.35;
+
+/**
+ * Estimate calories for a whole strength session from real training data
+ * (session duration + total volume). Used for Hevy-synced workouts.
+ */
+export function estimateCaloriesFromVolume({
+  durationMinutes,
+  volumeKg,
+  reps,
+  bodyWeightKg = DEFAULT_BODY_WEIGHT_KG,
+}: {
+  durationMinutes: number;
+  volumeKg: number;
+  reps: number;
+  bodyWeightKg?: number | null;
+}) {
+  const bw = bodyWeightKg && bodyWeightKg > 0 ? bodyWeightKg : DEFAULT_BODY_WEIGHT_KG;
+  const metabolic = (5 * 3.5 * bw) / 200 * Math.max(0, durationMinutes);
+  const loaded = volumeKg > 0 ? volumeKg : reps * bw * BODYWEIGHT_LOAD_FACTOR;
+  return Math.max(0, Math.round(metabolic + loaded * KCAL_PER_KG_REP));
+}
+
 /**
  * Estimate calories burned.
  * - Cardio / time-based: MET formula → kcal = MET * 3.5 * bodyWeight / 200 * minutes

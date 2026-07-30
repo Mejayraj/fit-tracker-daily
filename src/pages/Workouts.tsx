@@ -13,6 +13,8 @@ import { toast } from "sonner";
 import { Dumbbell, Trash2, Plus, Flame, ClipboardList, Search, Save, X, Check, Bike, Footprints, Waves, Mountain, Activity } from "lucide-react";
 import { EXERCISE_TYPES, estimateCaloriesBurned } from "@/lib/calories";
 import StravaActivities from "@/components/StravaActivities";
+import HevyWorkouts from "@/components/HevyWorkouts";
+import { useHevy } from "@/hooks/useHevy";
 
 type Workout = {
   id: string; exercise_type: string; exercise_name: string;
@@ -63,6 +65,7 @@ export default function Workouts() {
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [bodyWeight, setBodyWeight] = useState<number | null>(null);
   const [stravaToday, setStravaToday] = useState<StravaActivity[]>([]);
+  const { status: hevyStatus, workouts: hevyWorkouts, syncing: hevySyncing, sync: hevySync } = useHevy(user?.id);
 
   // log form
   const [type, setType] = useState("strength");
@@ -161,8 +164,10 @@ export default function Workouts() {
     await supabase.from("profiles").update({ body_weight_kg: v }).eq("id", user.id);
   };
 
+  const hevyToday = hevyWorkouts.filter((w) => format(new Date(w.start_time), "yyyy-MM-dd") === date);
   const stravaBurn = stravaToday.reduce((s, a) => s + (a.calories ?? 0), 0);
-  const totalBurn = list.reduce((s, w) => s + w.calories_burned, 0) + stravaBurn;
+  const hevyBurn = hevyToday.reduce((s, w) => s + w.calories_estimate, 0);
+  const totalBurn = list.reduce((s, w) => s + w.calories_burned, 0) + stravaBurn + hevyBurn;
 
   // Save current day's workouts as a routine
   const saveTodayAsRoutine = async () => {
@@ -311,11 +316,27 @@ export default function Workouts() {
           <span className="text-accent font-semibold flex items-center gap-1 text-sm"><Flame className="h-4 w-4" /> {totalBurn} kcal</span>
         </div>
         <div className="space-y-2">
-          {list.length === 0 && stravaToday.length === 0 && (
+          {list.length === 0 && stravaToday.length === 0 && hevyToday.length === 0 && (
             <div className="rounded-xl bg-secondary/30 border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
               No workouts logged yet.
             </div>
           )}
+          {hevyToday.map((w) => (
+            <div key={`hevy-${w.id}`} className="flex items-center justify-between gap-2 rounded-xl bg-secondary/60 px-3 py-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="h-9 w-9 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0">
+                  <Dumbbell className="h-4 w-4" />
+                </div>
+                <div className="min-w-0">
+                  <div className="font-medium text-sm truncate">{w.title}</div>
+                  <div className="text-xs text-muted-foreground truncate">
+                    {w.duration_minutes} min · {w.total_sets}×sets · {Math.round(w.total_volume_kg).toLocaleString()} kg · Hevy
+                  </div>
+                </div>
+              </div>
+              <span className="text-accent font-semibold text-sm shrink-0">-{w.calories_estimate}</span>
+            </div>
+          ))}
           {stravaToday.map((a) => {
             const Icon = sportIcon(a.sport_type);
             return (
@@ -355,6 +376,15 @@ export default function Workouts() {
           ))}
         </div>
       </section>
+
+      {/* Hevy workouts */}
+      <HevyWorkouts
+        workouts={hevyWorkouts}
+        excludeDate={date}
+        connected={!!hevyStatus?.connected}
+        syncing={hevySyncing}
+        onSync={() => { hevySync().catch((e) => toast.error(e instanceof Error ? e.message : "Sync failed")); }}
+      />
 
       {/* Strava activities */}
       <StravaActivities excludeDate={date} />

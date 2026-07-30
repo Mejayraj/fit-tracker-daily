@@ -16,6 +16,7 @@ export default function ProgressPage() {
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [weights, setWeights] = useState<any[]>([]);
   const [fasts, setFasts] = useState<any[]>([]);
+  const [hevy, setHevy] = useState<any[]>([]);
   const [w, setW] = useState<number | "">("");
 
   const days = useMemo(() => Array.from({ length: 7 }).map((_, i) => format(subDays(new Date(), 6 - i), "yyyy-MM-dd")), []);
@@ -24,22 +25,28 @@ export default function ProgressPage() {
     if (!user) return;
     const since = days[0];
     const sinceIso = new Date(since + "T00:00:00").toISOString();
-    const [f, wo, wt, fs] = await Promise.all([
+    const [f, wo, wt, fs, hv] = await Promise.all([
       supabase.from("food_logs").select("logged_at,calories,protein").eq("user_id", user.id).gte("logged_at", since),
       supabase.from("workouts").select("logged_at,calories_burned").eq("user_id", user.id).gte("logged_at", since),
       supabase.from("weight_logs").select("*").eq("user_id", user.id).order("logged_at", { ascending: true }).limit(60),
       supabase.from("fasting_sessions").select("start_at,end_at").eq("user_id", user.id).not("end_at", "is", null).gte("start_at", sinceIso),
+      supabase.from("hevy_workouts").select("start_time,calories_estimate").eq("user_id", user.id).gte("start_time", sinceIso),
     ]);
     setFoods(f.data ?? []);
     setWorkouts(wo.data ?? []);
     setWeights(wt.data ?? []);
     setFasts(fs.data ?? []);
+    setHevy(hv.data ?? []);
   };
   useEffect(() => { load(); }, [user]);
 
   const data = days.map((d) => {
     const eaten = foods.filter((x) => x.logged_at === d).reduce((s, x) => s + (x.calories || 0), 0);
-    const burned = workouts.filter((x) => x.logged_at === d).reduce((s, x) => s + (x.calories_burned || 0), 0);
+    const burned =
+      workouts.filter((x) => x.logged_at === d).reduce((s, x) => s + (x.calories_burned || 0), 0) +
+      hevy
+        .filter((x) => format(new Date(x.start_time), "yyyy-MM-dd") === d)
+        .reduce((s, x) => s + (x.calories_estimate || 0), 0);
     const protein = foods.filter((x) => x.logged_at === d).reduce((s, x) => s + Number(x.protein || 0), 0);
     return { day: format(new Date(d), "EEE"), date: d, net: eaten - burned, protein: Math.round(protein), eaten, burned };
   });
