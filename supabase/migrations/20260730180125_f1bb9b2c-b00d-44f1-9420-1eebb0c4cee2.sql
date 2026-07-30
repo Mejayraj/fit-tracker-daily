@@ -1,0 +1,2 @@
+CREATE POLICY "own strava insert" ON public.strava_connections FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "own strava update" ON public.strava_connections FOR UPDATE TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
