@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { escapeHtml, isAllowedOrigin, verifyState } from "../_shared/strava-state.ts";
 
 Deno.serve(async (req) => {
   const url = new URL(req.url);
@@ -8,14 +9,19 @@ Deno.serve(async (req) => {
 
   const html = (msg: string, redirect?: string) =>
     new Response(
-      `<!doctype html><meta charset="utf-8"><title>Strava</title><body style="font-family:system-ui;padding:24px;background:#0a0a0a;color:#fff"><p>${msg}</p>${redirect ? `<script>setTimeout(()=>location.href=${JSON.stringify(redirect)},800)</script>` : ""}</body>`,
+      `<!doctype html><meta charset="utf-8"><title>Strava</title><body style="font-family:system-ui;padding:24px;background:#0a0a0a;color:#fff"><p>${escapeHtml(msg)}</p>${redirect ? `<script>setTimeout(()=>location.href=${JSON.stringify(redirect)},800)</script>` : ""}</body>`,
       { headers: { "Content-Type": "text/html; charset=utf-8" } },
     );
 
   try {
-    if (error) return html(`Strava connection cancelled: ${error}`);
+    if (error) return html("Strava connection was cancelled or denied.");
     if (!code || !stateRaw) return html("Missing code or state.");
-    const state = JSON.parse(atob(stateRaw)) as { u: string; o: string };
+
+    const stateSecret = Deno.env.get("STRAVA_STATE_SECRET");
+    if (!stateSecret) return html("Strava is not configured correctly.");
+    const state = await verifyState(stateRaw, stateSecret);
+    if (!state) return html("Invalid or expired Strava authorization request. Please try connecting again.");
+    if (!isAllowedOrigin(state.o)) return html("Invalid redirect target.");
 
     const clientId = Deno.env.get("STRAVA_CLIENT_ID");
     const clientSecret = Deno.env.get("STRAVA_CLIENT_SECRET");
@@ -27,7 +33,10 @@ Deno.serve(async (req) => {
       body: JSON.stringify({ client_id: clientId, client_secret: clientSecret, code, grant_type: "authorization_code" }),
     });
     const tok = await tokRes.json();
-    if (!tokRes.ok) return html(`Token exchange failed: ${JSON.stringify(tok)}`);
+    if (!tokRes.ok) {
+      console.error("Strava token exchange failed", tok);
+      return html("Could not complete the Strava connection. Please try again.");
+    }
 
     const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const { error: upErr } = await admin.from("strava_connections").upsert({
@@ -40,10 +49,14 @@ Deno.serve(async (req) => {
       expires_at: new Date(tok.expires_at * 1000).toISOString(),
       scope: url.searchParams.get("scope") ?? null,
     }, { onConflict: "user_id" });
-    if (upErr) return html(`Failed to save connection: ${upErr.message}`);
+    if (upErr) {
+      console.error("Failed to save Strava connection", upErr);
+      return html("Failed to save your Strava connection. Please try again.");
+    }
 
     return html("Strava connected! Redirecting…", `${state.o}/?strava=connected`);
   } catch (e) {
-    return html(`Error: ${e instanceof Error ? e.message : "unknown"}`);
+    console.error("Strava callback error", e);
+    return html("Something went wrong connecting Strava. Please try again.");
   }
 });
