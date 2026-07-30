@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { encodeState, isAllowedOrigin, normalizeOrigin } from "../_shared/strava-state.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -21,13 +22,22 @@ Deno.serve(async (req) => {
     if (!clientId) return new Response(JSON.stringify({ error: "STRAVA_CLIENT_ID not configured" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const body = await req.json().catch(() => ({}));
-    const origin = body.origin as string | undefined;
-    if (!origin) return new Response(JSON.stringify({ error: "origin required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const rawOrigin = typeof body.origin === "string" ? body.origin : undefined;
+    if (!rawOrigin || rawOrigin.length > 2048) {
+      return new Response(JSON.stringify({ error: "origin required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const origin = normalizeOrigin(rawOrigin);
+    if (!origin || !isAllowedOrigin(origin)) {
+      return new Response(JSON.stringify({ error: "origin not allowed" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const stateSecret = Deno.env.get("STRAVA_STATE_SECRET");
+    if (!stateSecret) return new Response(JSON.stringify({ error: "Server not configured" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const projectId = Deno.env.get("SUPABASE_URL")!.split("//")[1].split(".")[0];
     const redirectUri = `https://${projectId}.supabase.co/functions/v1/strava-oauth-callback`;
-    // state encodes user id + return origin
-    const state = btoa(JSON.stringify({ u: userId, o: origin }));
+    // state encodes user id + return origin, HMAC-signed so it cannot be forged
+    const state = await encodeState(userId, origin, stateSecret);
     const url = new URL("https://www.strava.com/oauth/authorize");
     url.searchParams.set("client_id", clientId);
     url.searchParams.set("redirect_uri", redirectUri);
