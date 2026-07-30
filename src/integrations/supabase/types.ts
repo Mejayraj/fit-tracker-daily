@@ -80,6 +80,84 @@ export type Database = {
         }
         Relationships: []
       }
+      hevy_connections: {
+        Row: {
+          api_key: string
+          created_at: string
+          last_synced_at: string | null
+          updated_at: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          api_key: string
+          created_at?: string
+          last_synced_at?: string | null
+          updated_at?: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          api_key?: string
+          created_at?: string
+          last_synced_at?: string | null
+          updated_at?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      hevy_workouts: {
+        Row: {
+          calories_estimate: number
+          created_at: string
+          duration_minutes: number
+          end_time: string | null
+          exercises: Json
+          hevy_id: string
+          id: string
+          start_time: string
+          title: string
+          total_reps: number
+          total_sets: number
+          total_volume_kg: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          calories_estimate?: number
+          created_at?: string
+          duration_minutes?: number
+          end_time?: string | null
+          exercises?: Json
+          hevy_id: string
+          id?: string
+          start_time: string
+          title?: string
+          total_reps?: number
+          total_sets?: number
+          total_volume_kg?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          calories_estimate?: number
+          created_at?: string
+          duration_minutes?: number
+          end_time?: string | null
+          exercises?: Json
+          hevy_id?: string
+          id?: string
+          start_time?: string
+          title?: string
+          total_reps?: number
+          total_sets?: number
+          total_volume_kg?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           body_weight_kg: number | null
