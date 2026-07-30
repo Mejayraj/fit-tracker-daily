@@ -11,6 +11,8 @@ import { LogOut, Palette, Sun, Moon, Sparkles, User, Check, Activity, Loader2 } 
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import HevyConnect from "@/components/HevyConnect";
+import { useHevy } from "@/hooks/useHevy";
 
 const THEMES: { id: ThemeName; label: string; icon: any }[] = [
   { id: "neon", label: "Neon (default)", icon: Sparkles },
@@ -28,6 +30,7 @@ export default function ProfileMenu() {
   const initial = (user?.email ?? "?").charAt(0).toUpperCase();
   const [strava, setStrava] = useState<{ connected: boolean; athlete?: { firstname?: string; lastname?: string } | null } | null>(null);
   const [stravaBusy, setStravaBusy] = useState(false);
+  const { status: hevyStatus, loadStatus: loadHevy } = useHevy(user?.id);
 
   const loadStrava = async () => {
     try {
@@ -148,6 +151,9 @@ export default function ProfileMenu() {
             </Button>
           )}
         </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">Hevy</DropdownMenuLabel>
+        <HevyConnect status={hevyStatus} onChange={() => { loadHevy(); }} />
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={async () => { await signOut(); nav("/auth"); }} className="cursor-pointer">
           <LogOut className="h-4 w-4 mr-2" /> Sign out
