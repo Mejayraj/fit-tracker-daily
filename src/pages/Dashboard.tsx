@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Activity, Apple, Dumbbell, Flame, Plus, Utensils } from "lucide-react";
+import ProfileMenu from "@/components/ProfileMenu";
 
 type Profile = { display_name: string | null; calorie_goal: number; protein_goal: number; carb_goal: number; fat_goal: number };
 
@@ -43,15 +44,15 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <header className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-3">
-          <div className="h-12 w-12 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-glow-primary">
-            <Activity className="h-6 w-6 text-primary-foreground" />
-          </div>
+      <header className="space-y-4">
+        <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Hi, {profile?.display_name || "Athlete"}</h1>
-            <p className="text-sm text-muted-foreground">{format(new Date(), "EEEE, MMM d")}</p>
+            <h1 className="text-[28px] font-bold tracking-tight leading-tight">Dashboard</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Hi, {profile?.display_name || "Athlete"} · {format(new Date(), "EEE, MMM d")}
+            </p>
           </div>
+          <ProfileMenu />
         </div>
         <div className="flex items-center gap-2">
           <Button onClick={() => nav("/workouts")} className="gap-2 bg-gradient-accent text-accent-foreground shadow-glow-accent hover:opacity-90 animate-pulse">
