@@ -9,28 +9,28 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Dark neon theme — single theme, applied as default */
-    --background: 150 30% 4%;
+    --background: 0 0% 0%;
     --foreground: 150 15% 96%;
 
-    --card: 150 20% 7%;
+    --card: 111 20% 6%;
     --card-foreground: 150 15% 96%;
 
-    --popover: 150 20% 8%;
+    --popover: 0 0% 6%;
     --popover-foreground: 150 15% 96%;
 
-    --primary: 130 90% 55%;
-    --primary-foreground: 150 30% 6%;
-    --primary-glow: 130 95% 65%;
+    --primary: 111 100% 54%;
+    --primary-foreground: 0 0% 4%;
+    --primary-glow: 111 100% 65%;
 
-    --secondary: 150 15% 12%;
+    --secondary: 0 0% 10%;
     --secondary-foreground: 150 15% 92%;
 
-    --muted: 150 12% 14%;
+    --muted: 0 0% 12%;
     --muted-foreground: 150 8% 60%;
 
-    --accent: 280 90% 65%;
-    --accent-foreground: 0 0% 100%;
-    --accent-glow: 280 95% 75%;
+    --accent: 111 90% 60%;
+    --accent-foreground: 0 0% 4%;
+    --accent-glow: 111 95% 70%;
 
     --destructive: 0 80% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -39,18 +39,18 @@ All colors MUST be HSL.
     --warning: 35 92% 60%;
     --info: 210 90% 60%;
 
-    --border: 150 15% 14%;
-    --input: 150 15% 14%;
-    --ring: 130 90% 55%;
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 111 100% 54%;
 
     --radius: 1rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(130 90% 55%), hsl(150 95% 60%));
-    --gradient-accent: linear-gradient(135deg, hsl(280 90% 65%), hsl(260 90% 60%));
+    --gradient-primary: linear-gradient(135deg, hsl(111 100% 54%), hsl(150 95% 55%));
+    --gradient-accent: linear-gradient(135deg, hsl(111 90% 60%), hsl(160 90% 55%));
     --shadow-card: 0 1px 0 hsl(150 30% 100% / 0.04) inset, 0 8px 32px hsl(0 0% 0% / 0.4);
-    --shadow-elegant: 0 10px 40px -12px hsl(130 90% 55% / 0.45);
-    --glow-primary: 0 0 24px hsl(130 90% 55% / 0.55);
-    --glow-accent: 0 0 24px hsl(280 90% 65% / 0.55);
+    --shadow-elegant: 0 10px 40px -12px hsl(111 100% 54% / 0.45);
+    --glow-primary: 0 0 24px hsl(111 100% 54% / 0.5);
+    --glow-accent: 0 0 24px hsl(111 90% 60% / 0.5);
 
     --sidebar-background: 0 0% 98%;
 
