@@ -85,8 +85,8 @@ export default function Auth() {
 
       <Card className="w-full max-w-md shadow-elegant border-white/15 bg-white/10 backdrop-blur-2xl ring-1 ring-white/15">
         <CardHeader className="text-center">
-          <img src={logo} alt="Get Fit logo" className="mx-auto h-16 w-16 rounded-xl mb-2 drop-shadow-[0_0_18px_hsl(var(--primary)/0.6)]" />
-          <CardTitle className="text-glow-primary">Get Fit</CardTitle>
+          <img src={logo} alt="Kadak Fitness logo" className="mx-auto h-16 w-16 rounded-xl mb-2 drop-shadow-[0_0_18px_hsl(var(--primary)/0.6)]" />
+          <CardTitle className="text-glow-primary">Kadak Fitness</CardTitle>
           <CardDescription>Your personal fitness & nutrition log</CardDescription>
         </CardHeader>
         <CardContent>
