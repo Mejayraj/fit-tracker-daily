@@ -83,7 +83,7 @@ export default function ProgressPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Progress</h1>
+        <h1 className="text-[28px] font-bold tracking-tight leading-tight">Progress</h1>
         <p className="text-sm text-muted-foreground">Last 7 days at a glance.</p>
       </div>
 
