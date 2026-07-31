@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard.tsx";
 import Workouts from "./pages/Workouts.tsx";
 import Exercises from "./pages/Exercises.tsx";
 import ProgressPage from "./pages/Progress.tsx";
+import ProfilePage from "./pages/Profile.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/exercises" element={<ProtectedShell><Exercises /></ProtectedShell>} />
             <Route path="/food" element={<ProtectedShell><Food /></ProtectedShell>} />
             <Route path="/progress" element={<ProtectedShell><ProgressPage /></ProtectedShell>} />
+            <Route path="/profile" element={<ProtectedShell><ProfilePage /></ProtectedShell>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
