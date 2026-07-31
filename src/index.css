@@ -240,6 +240,11 @@ All colors MUST be HSL.
     }
   }
   .text-glow-primary { text-shadow: 0 0 18px hsl(var(--primary) / 0.7); }
+  .theme-light .glass-card,
+  body.theme-light .glass-card {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
   .text-glow-accent { text-shadow: 0 0 18px hsl(var(--accent) / 0.7); }
   .shadow-glow-primary { box-shadow: var(--glow-primary); }
   .shadow-glow-accent { box-shadow: var(--glow-accent); }
