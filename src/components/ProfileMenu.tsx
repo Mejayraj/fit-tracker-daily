@@ -84,8 +84,13 @@ export default function ProfileMenu() {
     <>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 bg-secondary text-foreground hover:bg-secondary/80">
-          <span className="text-sm font-semibold">{initial}</span>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Open profile menu"
+          className="rounded-full h-12 w-12 shrink-0 bg-secondary text-foreground hover:bg-secondary/80 border-2 border-primary shadow-[0_6px_20px_hsl(var(--primary)/0.35)]"
+        >
+          <span className="text-base font-semibold">{initial}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">
