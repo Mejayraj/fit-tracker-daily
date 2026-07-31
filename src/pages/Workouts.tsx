@@ -207,7 +207,7 @@ export default function Workouts() {
       {/* Header — Hevy style */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Workout</h1>
+          <h1 className="text-[28px] font-bold tracking-tight leading-tight">Workouts</h1>
           <p className="text-sm text-muted-foreground">{format(new Date(date), "EEEE, MMM d")}</p>
         </div>
         <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-auto" />
