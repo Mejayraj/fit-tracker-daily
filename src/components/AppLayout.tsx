@@ -21,8 +21,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       {/* Sidebar (md+) */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 w-60 flex-col border-r bg-card">
         <div className="p-5 flex items-center gap-2">
-          <img src={logo} alt="Get Fit logo" className="h-9 w-9 rounded-lg" />
-          <span className="font-semibold text-lg">Get Fit</span>
+          <img src={logo} alt="Kadak Fitness logo" className="h-10 w-10 rounded-xl" />
         </div>
         <nav className="flex-1 px-3 space-y-1">
           {tabs.map((t) => (
@@ -54,8 +53,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       {/* Mobile top bar */}
       <header className="md:hidden sticky top-0 z-10 bg-card/95 backdrop-blur border-b px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src={logo} alt="Get Fit logo" className="h-8 w-8 rounded-md" />
-          <span className="font-semibold">Get Fit</span>
+          <img src={logo} alt="Kadak Fitness logo" className="h-9 w-9 rounded-lg" />
         </div>
         <ProfileMenu />
       </header>
