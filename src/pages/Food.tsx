@@ -153,7 +153,7 @@ export default function Food() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Food Log</h1>
+          <h1 className="text-[28px] font-bold tracking-tight leading-tight">Nutrition</h1>
           <p className="text-sm text-muted-foreground">Search foods, log portions and track macros.</p>
         </div>
         <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-auto" />

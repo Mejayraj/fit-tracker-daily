@@ -1,49 +1,38 @@
 ## Goal
+Visual-only redesign to a mobile-first "liquid glass" look. No changes to Strava/Hevy sync, food logging, barcode scanner, exercise library, or any data logic.
 
-Let you connect your Hevy Pro account in the app, pull your Hevy workouts into the Workouts page, and estimate calories burned from actual training data (kg lifted × reps, set volume, and session duration).
+## 1. Design tokens (`src/index.css`)
+- Default (neon) theme: background pure black, subtle top-left radial `rgba(57,255,20,0.04)` glow only, remove the purple bottom-right glow.
+- Set primary to neon green `#39FF14` (as HSL), accent aligned to the same green family.
+- Add reusable utilities:
+  - `.glass-card` — `background: rgba(255,255,255,0.04)`, `backdrop-filter: blur(16px)`, `1px solid rgba(255,255,255,0.08)`, radius 20px, padding 20px.
+  - `.glass-nav` — `rgba(15,15,15,0.6)`, `blur(20px)`, radius 40px, `1px solid rgba(255,255,255,0.08)`, `0 8px 32px rgba(0,0,0,0.4)`.
+- Light/dark/custom themes keep working (glass values derived from tokens so they don't look broken).
 
-## How the Hevy connection works
+## 2. Layout (`src/components/AppLayout.tsx`)
+- Delete the desktop sidebar, desktop top bar, and mobile top bar (logo removed everywhere in-app; login page logo stays).
+- `main`: `padding-top: 60px`, `padding-bottom: 100px`, full-width with a `max-w-lg mx-auto` centering so it still reads well on desktop.
+- New floating bottom nav component: fixed bottom, 16px margins all around, pill shape, glass styling, 6 items with icon + small label:
+  Dashboard · Nutrition · Workouts · Exercise · Progress · Profile.
+  Active item gets a neon-green tinted pill background behind icon+label. Labels shrink to ~10px so 6 fit on a 393px screen.
 
-Hevy's public API is Pro-only and uses a personal API key you generate at hevy.com/settings?developer. Each app user pastes their own key once; the app stores it server-side and never exposes it to the browser.
+## 3. Page headers
+Each page renders only its functional name, bold white ~28px, top-left:
+Dashboard, Nutrition, Workouts, Exercise, Progress, Profile. Existing subtitles/date lines kept where they add value.
 
-## What gets built
+## 4. Dashboard (`src/pages/Dashboard.tsx`)
+- Floating avatar top-right: 48×48 circle, 2px `#39FF14` ring, drop shadow, initials or profile picture. Tapping it opens the existing ProfileMenu dropdown (unchanged functionality).
+- Header becomes "Dashboard" title with the "Hi, {name}" greeting as the subline.
+- All cards (calorie ring, macros, meals, workouts) converted to `.glass-card`.
 
-**1. Backend storage**
-- New `hevy_connections` table: `user_id`, `api_key`, `username`, `last_synced_at`, timestamps. RLS so a user only sees their own row; the key column is only read by backend functions.
-- New `hevy_workouts` table (cached sync): `user_id`, `hevy_id`, `title`, `start_time`, `end_time`, `duration_minutes`, `total_volume_kg`, `total_reps`, `total_sets`, `calories_estimate`, `exercises` (JSON). Unique on (`user_id`, `hevy_id`) so re-syncing updates instead of duplicating.
+## 5. New Profile page (`/profile`)
+- New route + page reusing everything already in `ProfileMenu`: account info, theme picker (dark / light / custom hue), Strava connect/disconnect, Hevy connect/sync, sign out — rendered as glass cards instead of dropdown items.
+- `ProfileMenu` dropdown stays for the dashboard avatar; shared logic extracted so both stay in sync.
 
-**2. Edge functions**
-- `hevy-connect` — validates the pasted key against `GET /v1/user/info`, saves it, returns the Hevy username.
-- `hevy-status` — returns whether connected + username + last sync.
-- `hevy-disconnect` — deletes the stored key.
-- `hevy-sync` — pages `GET /v1/workouts`, computes volume/reps/sets and the calorie estimate per workout, upserts into `hevy_workouts`.
-
-**3. Calorie estimator (from real Hevy data)**
-
-Per workout, using your profile body weight (falls back to 70 kg):
-
-```text
-duration_min   = end_time - start_time
-volume_kg      = sum over sets of (weight_kg x reps)
-metabolic_kcal = MET(strength=5.0) x 3.5 x bodyweight / 200 x duration_min
-work_kcal      = volume_kg x 0.5 m x 9.81 / 4184 / 0.22 efficiency  (~0.0053 kcal per kg-rep)
-bodyweight_reps (no external load) counted at 0.35 x bodyweight per rep
-total_kcal     = metabolic_kcal + work_kcal
-```
-
-Cardio-style Hevy entries (duration/distance sets, no weight) use their own MET instead of the lifting bonus. Existing `src/lib/calories.ts` is extended with a `estimateCaloriesFromVolume()` helper so the same math is reusable and unit-testable.
-
-**4. UI**
-- Profile menu: a "Hevy" section next to Strava — Connect (dialog to paste the API key with a link to where to get it), shows connected username, Sync now, Disconnect.
-- Workouts page: a "Hevy" source block styled like the existing Strava activities list — cards with title, date, duration, sets/reps, total volume in kg, and the estimated kcal. Today's Hevy workouts feed the Today section and the daily burn total, same as Strava does now; older ones show in history.
-- Progress page burn/net-calorie charts include Hevy calories.
+## 6. Other pages
+Nutrition (Food), Workouts, Exercise, Progress: swap `Card` usages for glass styling, apply the new header, keep every tab/dialog/feature as is.
 
 ## Technical notes
-
-- Hevy auth header is `api-key: <key>`; base URL `https://api.hevyapp.com`. All calls happen in edge functions (CORS-restricted and key never leaves the server).
-- Sync is manual (button) plus automatic on Workouts page load if last sync is older than 15 minutes.
-- The API key is stored per user in the database rather than as a project secret, so multiple users can each connect their own Hevy account.
-
-## What I need from you
-
-Your Hevy API key isn't needed by me to build this — you'll paste it in the app UI after it ships. If you'd rather it be a single hardcoded project-wide key instead of per-user, say so and I'll swap the storage for a secret.
+- Nav item list lives in one place and is consumed by the bottom nav.
+- Cards keep shadcn `Card` but with a `glass` class applied so existing markup and props stay intact.
+- Backdrop-filter fallback: solid `rgba(15,15,15,0.9)` where blur is unsupported.
