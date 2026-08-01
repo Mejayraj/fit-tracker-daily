@@ -103,8 +103,8 @@ export default function Auth() {
         <section className="auth-card px-7 py-8">
           <Tabs defaultValue="signin">
             <TabsList className="auth-tabs grid grid-cols-2 w-full h-auto">
-              <TabsTrigger value="signin" className="auth-tab py-2.5 text-sm font-medium">Sign In</TabsTrigger>
-              <TabsTrigger value="signup" className="auth-tab py-2.5 text-sm font-medium">Sign Up</TabsTrigger>
+              <TabsTrigger value="signin" className="auth-tab py-2.5 text-sm font-medium data-[state=active]:bg-[rgba(57,255,20,0.15)] data-[state=active]:text-[#39FF14] data-[state=active]:border-[rgba(57,255,20,0.3)] data-[state=active]:shadow-none">Sign In</TabsTrigger>
+              <TabsTrigger value="signup" className="auth-tab py-2.5 text-sm font-medium data-[state=active]:bg-[rgba(57,255,20,0.15)] data-[state=active]:text-[#39FF14] data-[state=active]:border-[rgba(57,255,20,0.3)] data-[state=active]:shadow-none">Sign Up</TabsTrigger>
             </TabsList>
 
             <TabsContent value="signin" className="animate-fade-in">
