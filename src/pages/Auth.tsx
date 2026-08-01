@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import logo from "@/assets/logo.png";
-import bg1 from "@/assets/auth-bg.jpg";
-import bg2 from "@/assets/auth-bg-2.jpg";
-import bg3 from "@/assets/auth-bg-3.jpg";
 
 export default function Auth() {
   const nav = useNavigate();
@@ -24,13 +20,6 @@ export default function Auth() {
   const [showPwIn, setShowPwIn] = useState(false);
   const [showPwUp, setShowPwUp] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
-  const bgs = [bg1, bg2, bg3];
-  const [bgIdx, setBgIdx] = useState(0);
-
-  useEffect(() => {
-    const t = setInterval(() => setBgIdx((i) => (i + 1) % bgs.length), 6000);
-    return () => clearInterval(t);
-  }, []);
 
   useEffect(() => {
     if (!loading && user) nav("/", { replace: true });
@@ -65,44 +54,70 @@ export default function Auth() {
     }
   };
 
-  return (
-    <main className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
-      {/* Athlete photo slideshow */}
-      {bgs.map((src, i) => (
-        <img
-          key={src}
-          src={src}
-          alt=""
-          aria-hidden
-          className={`absolute inset-0 -z-20 h-full w-full object-cover transition-opacity duration-[1500ms] ${i === bgIdx ? "opacity-100" : "opacity-0"}`}
-        />
-      ))}
-      {/* Simple dark overlay */}
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-black/60"
-      />
+  const signInWithGoogle = async () => {
+    setBusy(true);
+    const { error } = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: `${window.location.origin}/`,
+    });
+    setBusy(false);
+    if (error) toast.error(error.message);
+    else nav("/", { replace: true });
+  };
 
-      <Card className="w-full max-w-md shadow-elegant border-white/15 bg-white/10 backdrop-blur-2xl ring-1 ring-white/15">
-        <CardHeader className="text-center">
-          <img src={logo} alt="Kadak Fitness logo" className="mx-auto h-16 w-16 rounded-xl mb-2 drop-shadow-[0_0_18px_hsl(var(--primary)/0.6)]" />
-          <CardTitle className="text-glow-primary">Kadak Fitness</CardTitle>
-          <CardDescription>Your personal fitness & nutrition log</CardDescription>
-        </CardHeader>
-        <CardContent>
+  const googleBtn = (
+    <>
+      <div className="flex items-center gap-3 my-5">
+        <span className="h-px flex-1 bg-white/30" />
+        <span className="text-xs text-white/40">or continue with</span>
+        <span className="h-px flex-1 bg-white/30" />
+      </div>
+      <button type="button" onClick={signInWithGoogle} disabled={busy} className="auth-glass-btn w-full py-3.5 text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-60">
+        <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
+          <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.5 5.5 0 0 1-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.8z" />
+          <path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.2-4 1.2-3.1 0-5.7-2.1-6.6-4.9H1.4v3.1A12 12 0 0 0 12 24z" />
+          <path fill="#FBBC05" d="M5.4 14.4a7.2 7.2 0 0 1 0-4.6V6.7H1.4a12 12 0 0 0 0 10.8l4-3.1z" />
+          <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0A12 12 0 0 0 1.4 6.7l4 3.1C6.3 6.9 8.9 4.8 12 4.8z" />
+        </svg>
+        Continue with Google
+      </button>
+    </>
+  );
+
+  return (
+    <main className="relative min-h-screen w-full overflow-hidden bg-black flex items-center justify-center px-5 py-10">
+      <div aria-hidden className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[520px] rounded-full blur-[120px]" style={{ background: "radial-gradient(circle, rgba(57,255,20,0.04), transparent 70%)" }} />
+      <div aria-hidden className="pointer-events-none absolute -bottom-32 -right-24 h-[420px] w-[420px] rounded-full blur-[120px]" style={{ background: "radial-gradient(circle, rgba(20,120,40,0.02), transparent 70%)" }} />
+
+      <div className="auth-in relative w-full max-w-md">
+        <header className="text-center mb-7">
+          <img
+            src={logo}
+            alt="Kadak Fitness logo"
+            className="mx-auto h-[72px] w-[72px] rounded-2xl"
+            style={{ boxShadow: "0 0 24px rgba(57,255,20,0.3)" }}
+          />
+          <h1 className="mt-4 text-[28px] font-semibold text-white leading-tight">Kadak Fitness</h1>
+          <p className="mt-1 text-sm" style={{ color: "#888" }}>Train Hard. Track Smart.</p>
+        </header>
+
+        <section className="auth-card px-7 py-8">
           <Tabs defaultValue="signin">
-            <TabsList className="grid grid-cols-2 w-full">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsList className="auth-tabs grid grid-cols-2 w-full h-auto">
+              <TabsTrigger value="signin" className="auth-tab py-2.5 text-sm font-medium data-[state=active]:bg-[rgba(57,255,20,0.15)] data-[state=active]:text-[#39FF14] data-[state=active]:border-[rgba(57,255,20,0.3)] data-[state=active]:shadow-none">Sign In</TabsTrigger>
+              <TabsTrigger value="signup" className="auth-tab py-2.5 text-sm font-medium data-[state=active]:bg-[rgba(57,255,20,0.15)] data-[state=active]:text-[#39FF14] data-[state=active]:border-[rgba(57,255,20,0.3)] data-[state=active]:shadow-none">Sign Up</TabsTrigger>
             </TabsList>
-            <TabsContent value="signin">
-              <form onSubmit={signIn} className="space-y-3 mt-4">
-                <div><Label htmlFor="ei">Email</Label><Input id="ei" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-                <div>
-                  <Label htmlFor="pi">Password</Label>
+
+            <TabsContent value="signin" className="animate-fade-in">
+              <form onSubmit={signIn} className="space-y-4 mt-6">
+                <div className="space-y-1.5">
+                  <Label htmlFor="ei" className="text-xs text-white/60">Email</Label>
+                  <Input id="ei" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="auth-input" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="pi" className="text-xs text-white/60">Password</Label>
                   <div className="relative">
-                    <Input id="pi" type={showPwIn ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
-                    <button type="button" onClick={() => setShowPwIn((v) => !v)} aria-label={showPwIn ? "Hide password" : "Show password"} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                    <Input id="pi" type={showPwIn ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} className="auth-input pr-11" />
+                    <button type="button" onClick={() => setShowPwIn((v) => !v)} aria-label={showPwIn ? "Hide password" : "Show password"} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
                       {showPwIn ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
@@ -113,35 +128,49 @@ export default function Auth() {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 rounded border-muted-foreground/30 bg-transparent accent-primary"
+                    className="h-4 w-4 rounded border-white/20 bg-transparent accent-primary"
                   />
-                  <Label htmlFor="remember" className="text-sm font-normal cursor-pointer">Remember me</Label>
+                  <Label htmlFor="remember" className="text-sm font-normal cursor-pointer text-white/60">Remember me</Label>
                 </div>
-                <Button type="submit" className="w-full" disabled={busy}>{busy ? "Signing in..." : "Sign In"}</Button>
+                <button type="submit" disabled={busy} className="auth-primary-btn w-full text-sm disabled:opacity-60">
+                  {busy ? "Signing in..." : "Sign In"}
+                </button>
               </form>
+              {googleBtn}
             </TabsContent>
-            <TabsContent value="signup">
-              <form onSubmit={signUp} className="space-y-3 mt-4">
-                <div><Label htmlFor="n">Name</Label><Input id="n" value={name} onChange={(e) => setName(e.target.value)} /></div>
-                <div><Label htmlFor="eu">Email</Label><Input id="eu" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-                <div>
-                  <Label htmlFor="pu">Password</Label>
+
+            <TabsContent value="signup" className="animate-fade-in">
+              <form onSubmit={signUp} className="space-y-4 mt-6">
+                <div className="space-y-1.5">
+                  <Label htmlFor="n" className="text-xs text-white/60">Name</Label>
+                  <Input id="n" value={name} onChange={(e) => setName(e.target.value)} className="auth-input" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="eu" className="text-xs text-white/60">Email</Label>
+                  <Input id="eu" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="auth-input" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="pu" className="text-xs text-white/60">Password</Label>
                   <div className="relative">
-                    <Input id="pu" type={showPwUp ? "text" : "password"} required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
-                    <button type="button" onClick={() => setShowPwUp((v) => !v)} aria-label={showPwUp ? "Hide password" : "Show password"} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                    <Input id="pu" type={showPwUp ? "text" : "password"} required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="auth-input pr-11" />
+                    <button type="button" onClick={() => setShowPwUp((v) => !v)} aria-label={showPwUp ? "Hide password" : "Show password"} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
                       {showPwUp ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
                 </div>
-                <Button type="submit" className="w-full" disabled={busy}>{busy ? "Creating..." : "Create Account"}</Button>
+                <button type="submit" disabled={busy} className="auth-primary-btn w-full text-sm disabled:opacity-60">
+                  {busy ? "Creating..." : "Create Account"}
+                </button>
               </form>
+              {googleBtn}
             </TabsContent>
           </Tabs>
-          <p className="text-center text-xs text-muted-foreground mt-6">
-            Created by <span className="font-semibold text-foreground">Mejayraj.</span>
-          </p>
-        </CardContent>
-      </Card>
+        </section>
+
+        <p className="text-center text-xs text-white/40 mt-6">
+          Created by <span className="font-semibold text-white/70">Mejayraj.</span>
+        </p>
+      </div>
     </main>
   );
 }
