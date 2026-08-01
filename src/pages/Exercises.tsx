@@ -97,7 +97,7 @@ export default function Exercises() {
   return (
     <div className="space-y-5 pb-4">
       <div>
-        <h1 className="text-[28px] font-bold tracking-tight leading-tight">Exercise</h1>
+        <h2 className="text-xl font-bold tracking-tight leading-tight">Exercise Library</h2>
         <p className="text-sm text-muted-foreground">Browse exercises and log them to your workout log.</p>
       </div>
 

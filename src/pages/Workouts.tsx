@@ -207,11 +207,20 @@ export default function Workouts() {
       {/* Header — Hevy style */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[28px] font-bold tracking-tight leading-tight">Workouts</h1>
+          <h2 className="text-xl font-bold tracking-tight leading-tight">Workout Log</h2>
           <p className="text-sm text-muted-foreground">{format(new Date(date), "EEEE, MMM d")}</p>
         </div>
         <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-auto" />
       </div>
+
+      <button
+        type="button"
+        aria-label="Log a new workout"
+        onClick={() => setShowLog(true)}
+        className="fixed z-50 right-5 bottom-[104px] h-14 w-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-[0_8px_28px_hsl(var(--primary)/0.45)] active:scale-95 transition"
+      >
+        <Plus className="h-6 w-6" />
+      </button>
 
       {/* Quick start */}
       <section className="space-y-2">
