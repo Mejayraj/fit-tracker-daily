@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import HevyConnect, { HevyKeyDialog } from "@/components/HevyConnect";
 import { useHevy } from "@/hooks/useHevy";
 import { PageTitle } from "@/components/AppLayout";
+import ProgressPage from "./Progress";
 
 const THEMES: { id: ThemeName; label: string; icon: any }[] = [
   { id: "neon", label: "Neon (default)", icon: Sparkles },
@@ -73,7 +74,7 @@ export default function Profile() {
 
   return (
     <div className="space-y-6">
-      <PageTitle title="Profile" />
+      <PageTitle title="Me" />
 
       <Card>
         <CardContent className="p-5 flex items-center gap-4">
@@ -124,7 +125,7 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="order-none">
         <CardHeader><CardTitle className="text-lg">Strava</CardTitle></CardHeader>
         <CardContent>
           {strava?.connected ? (
