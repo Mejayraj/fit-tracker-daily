@@ -40,6 +40,7 @@ export default function StravaActivities({ excludeDate }: { excludeDate?: string
       return;
     }
     setConnected(data?.connected ?? false);
+    if (data?.error) setError(data.error);
     setActivities(data?.activities ?? []);
   };
 

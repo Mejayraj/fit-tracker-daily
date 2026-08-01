@@ -46,7 +46,12 @@ Deno.serve(async (req) => {
         refresh_token: conn.refresh_token,
       }),
     });
-    if (!refreshRes.ok) return json({ error: "Failed to refresh Strava token" }, 502);
+    if (!refreshRes.ok) {
+      return json(
+        { connected: true, activities: [], error: "Could not refresh your Strava session. Try reconnecting Strava from your profile." },
+        200,
+      );
+    }
     const refreshed = await refreshRes.json();
     accessToken = refreshed.access_token;
     await admin.from("strava_connections").update({
@@ -63,7 +68,17 @@ Deno.serve(async (req) => {
   });
   if (!actRes.ok) {
     const text = await actRes.text();
-    return json({ error: "Strava API error", details: text }, 502);
+    const inactive = text.includes('"Inactive"') || text.includes("Inactive");
+    return json(
+      {
+        connected: true,
+        activities: [],
+        error: inactive
+          ? "Strava says this app is Inactive. Activate the API application in your Strava account settings (Settings → My API Application), then refresh."
+          : "Strava could not return your activities right now. Please try again later.",
+      },
+      200,
+    );
   }
   const activities = await actRes.json();
   const mapped = (activities as any[]).map((a) => {
