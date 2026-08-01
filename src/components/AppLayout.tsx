@@ -1,16 +1,14 @@
 import { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Home, Dumbbell, UtensilsCrossed, LineChart, Library, User } from "lucide-react";
+import { Home, Dumbbell, UtensilsCrossed, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const tabs = [
-  { to: "/", label: "Dashboard", icon: Home, end: true },
+  { to: "/", label: "Home", icon: Home, end: true },
   { to: "/food", label: "Nutrition", icon: UtensilsCrossed },
-  { to: "/workouts", label: "Workouts", icon: Dumbbell },
-  { to: "/exercises", label: "Exercise", icon: Library },
-  { to: "/progress", label: "Progress", icon: LineChart },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: "/train", label: "Train", icon: Dumbbell },
+  { to: "/me", label: "Me", icon: User },
 ];
 
 export function PageTitle({ title, subtitle }: { title: string; subtitle?: string }) {
@@ -36,7 +34,7 @@ function BottomNav() {
             end={t.end}
             className={({ isActive }) =>
               cn(
-                "flex flex-1 flex-col items-center gap-0.5 rounded-[28px] px-1 py-2 text-[10px] font-medium transition-colors",
+                "flex flex-1 flex-col items-center gap-0.5 rounded-[28px] px-1 py-2 text-[11px] font-medium transition-colors",
                 isActive
                   ? "bg-primary/15 text-primary"
                   : "text-muted-foreground hover:text-foreground",

@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import HevyConnect, { HevyKeyDialog } from "@/components/HevyConnect";
 import { useHevy } from "@/hooks/useHevy";
 import { PageTitle } from "@/components/AppLayout";
+import ProgressPage from "./Progress";
 
 const THEMES: { id: ThemeName; label: string; icon: any }[] = [
   { id: "neon", label: "Neon (default)", icon: Sparkles },
@@ -71,22 +72,12 @@ export default function Profile() {
 
   const initial = (user?.email ?? "?").charAt(0).toUpperCase();
 
-  return (
-    <div className="space-y-6">
-      <PageTitle title="Profile" />
+  const displayName =
+    (user?.user_metadata as any)?.full_name ||
+    (user?.user_metadata as any)?.name ||
+    (user?.email ?? "").split("@")[0];
 
-      <Card>
-        <CardContent className="p-5 flex items-center gap-4">
-          <div className="h-12 w-12 rounded-full bg-secondary border-2 border-primary flex items-center justify-center shadow-[0_6px_20px_hsl(var(--primary)/0.35)]">
-            <span className="text-base font-semibold">{initial}</span>
-          </div>
-          <div className="min-w-0">
-            <div className="flex items-center gap-2 text-sm font-medium"><User className="h-4 w-4" /> Account</div>
-            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-          </div>
-        </CardContent>
-      </Card>
-
+  const themeCard = (
       <Card>
         <CardHeader><CardTitle className="text-lg">Theme</CardTitle></CardHeader>
         <CardContent className="space-y-2">
@@ -123,6 +114,23 @@ export default function Profile() {
           )}
         </CardContent>
       </Card>
+  );
+
+  return (
+    <div className="space-y-6">
+      <PageTitle title="Me" />
+
+      <Card>
+        <CardContent className="p-5 flex items-center gap-4">
+          <div className="h-14 w-14 rounded-full bg-secondary border-2 border-primary flex items-center justify-center shadow-[0_6px_20px_hsl(var(--primary)/0.35)]">
+            <span className="text-lg font-semibold">{initial}</span>
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 text-base font-semibold truncate"><User className="h-4 w-4" /> {displayName}</div>
+            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader><CardTitle className="text-lg">Strava</CardTitle></CardHeader>
@@ -152,6 +160,10 @@ export default function Profile() {
           <HevyConnect status={hevyStatus} onChange={() => loadHevy()} onRequestConnect={() => setHevyDialog(true)} />
         </CardContent>
       </Card>
+
+      <ProgressPage />
+
+      {themeCard}
 
       <Button variant="outline" className="w-full" onClick={async () => { await signOut(); nav("/auth"); }}>
         <LogOut className="h-4 w-4 mr-2" /> Sign out

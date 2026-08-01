@@ -9,10 +9,8 @@ import { ProtectedShell } from "@/components/AppLayout";
 import Auth from "./pages/Auth.tsx";
 import Food from "./pages/Food.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
-import Workouts from "./pages/Workouts.tsx";
-import Exercises from "./pages/Exercises.tsx";
-import ProgressPage from "./pages/Progress.tsx";
-import ProfilePage from "./pages/Profile.tsx";
+import Train from "./pages/Train.tsx";
+import Me from "./pages/Profile.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -28,11 +26,9 @@ const App = () => (
           <Routes>
             <Route path="/auth" element={<Auth />} />
             <Route path="/" element={<ProtectedShell><Dashboard /></ProtectedShell>} />
-            <Route path="/workouts" element={<ProtectedShell><Workouts /></ProtectedShell>} />
-            <Route path="/exercises" element={<ProtectedShell><Exercises /></ProtectedShell>} />
+            <Route path="/train" element={<ProtectedShell><Train /></ProtectedShell>} />
             <Route path="/food" element={<ProtectedShell><Food /></ProtectedShell>} />
-            <Route path="/progress" element={<ProtectedShell><ProgressPage /></ProtectedShell>} />
-            <Route path="/profile" element={<ProtectedShell><ProfilePage /></ProtectedShell>} />
+            <Route path="/me" element={<ProtectedShell><Me /></ProtectedShell>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
