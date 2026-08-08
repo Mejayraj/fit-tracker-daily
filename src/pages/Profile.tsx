@@ -77,45 +77,6 @@ export default function Profile() {
     (user?.user_metadata as any)?.name ||
     (user?.email ?? "").split("@")[0];
 
-  const themeCard = (
-      <Card>
-        <CardHeader><CardTitle className="text-lg">Theme</CardTitle></CardHeader>
-        <CardContent className="space-y-2">
-          {THEMES.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTheme(t.id)}
-              className={cn(
-                "w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors",
-                theme === t.id ? "bg-primary/15 text-primary" : "hover:bg-secondary/60",
-              )}
-            >
-              <t.icon className="h-4 w-4" />
-              <span className="flex-1 text-left">{t.label}</span>
-              {theme === t.id && <Check className="h-4 w-4" />}
-            </button>
-          ))}
-          {theme === "custom" && (
-            <div className="pt-2 space-y-2">
-              <p className="text-xs text-muted-foreground">Pick a hue</p>
-              <div className="grid grid-cols-9 gap-1">
-                {HUES.map((h) => (
-                  <button
-                    key={h}
-                    onClick={() => setHue(h)}
-                    aria-label={`hue ${h}`}
-                    className={cn("h-6 w-6 rounded-full border-2 transition-transform hover:scale-110", hue === h ? "border-foreground" : "border-transparent")}
-                    style={{ backgroundColor: `hsl(${h} 90% 55%)` }}
-                  />
-                ))}
-              </div>
-              <input type="range" min={0} max={359} value={hue} onChange={(e) => setHue(Number(e.target.value))} className="w-full" />
-            </div>
-          )}
-        </CardContent>
-      </Card>
-  );
-
   return (
     <div className="space-y-6">
       <PageTitle title="Me" />
@@ -162,8 +123,6 @@ export default function Profile() {
       </Card>
 
       <ProgressPage />
-
-      {themeCard}
 
       <Button variant="outline" className="w-full" onClick={async () => { await signOut(); nav("/auth"); }}>
         <LogOut className="h-4 w-4 mr-2" /> Sign out

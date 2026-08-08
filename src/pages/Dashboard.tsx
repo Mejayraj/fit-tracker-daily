@@ -55,7 +55,7 @@ export default function Dashboard() {
           <ProfileMenu />
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={() => nav("/train")} className="gap-2 bg-gradient-accent text-accent-foreground shadow-glow-accent hover:opacity-90 animate-pulse">
+          <Button onClick={() => nav("/train")} className="gap-2 bg-gradient-accent text-accent-foreground shadow-glow-accent hover:opacity-90">
             <Dumbbell className="h-4 w-4" /> Log Workout
           </Button>
           <Button onClick={() => nav("/food")} className="gap-2 bg-gradient-primary text-primary-foreground shadow-glow-primary hover:opacity-90">
