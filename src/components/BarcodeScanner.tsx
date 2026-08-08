@@ -97,7 +97,7 @@ export default function BarcodeScanner({ date, onLogged }: { date: string; onLog
         BarcodeFormat.UPC_A,
         BarcodeFormat.UPC_E,
         BarcodeFormat.CODE_128,
-गर        BarcodeFormat.CODE_39,
+        BarcodeFormat.CODE_39,
         BarcodeFormat.ITF,
       ]);
       hints.set(DecodeHintType.TRY_HARDER, true);
