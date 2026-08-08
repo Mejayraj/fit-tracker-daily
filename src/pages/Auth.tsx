@@ -90,12 +90,16 @@ export default function Auth() {
 
       <div className="auth-in relative w-full max-w-md">
         <header className="text-center mb-7">
-          <img
-            src={logo}
-            alt="Kadak Fitness logo"
-            className="mx-auto h-[72px] w-[72px] rounded-2xl"
+          <div
+            className="mx-auto flex h-[88px] w-[88px] items-center justify-center rounded-2xl bg-white/5 p-2.5 ring-1 ring-white/10"
             style={{ boxShadow: "0 0 24px rgba(57,255,20,0.3)" }}
-          />
+          >
+            <img
+              src={logo}
+              alt="Kadak Fitness logo"
+              className="h-full w-full object-contain"
+            />
+          </div>
           <h1 className="mt-4 text-[28px] font-semibold text-white leading-tight">Kadak Fitness</h1>
           <p className="mt-1 text-sm" style={{ color: "#888" }}>Train Hard. Track Smart.</p>
         </header>
