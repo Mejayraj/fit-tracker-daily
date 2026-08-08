@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useHevy } from "@/hooks/useHevy";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Activity, Apple, Dumbbell, Flame, Plus, Utensils } from "lucide-react";
@@ -17,6 +18,7 @@ export default function Dashboard() {
   const [foods, setFoods] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const today = format(new Date(), "yyyy-MM-dd");
+  const { workouts: hevyWorkouts } = useHevy(user?.id);
 
   useEffect(() => {
     if (!user) return;
@@ -33,7 +35,10 @@ export default function Dashboard() {
   }, [user, today]);
 
   const eaten = foods.reduce((s, f) => s + (f.calories || 0), 0);
-  const burned = workouts.reduce((s, w) => s + (w.calories_burned || 0), 0);
+  const hevyBurnedToday = hevyWorkouts
+    .filter((w) => format(new Date(w.start_time), "yyyy-MM-dd") === today)
+    .reduce((s, w) => s + (w.calories_estimate || 0), 0);
+  const burned = workouts.reduce((s, w) => s + (w.calories_burned || 0), 0) + hevyBurnedToday;
   const protein = foods.reduce((s, f) => s + Number(f.protein || 0), 0);
   const carbs = foods.reduce((s, f) => s + Number(f.carbs || 0), 0);
   const fat = foods.reduce((s, f) => s + Number(f.fat || 0), 0);
