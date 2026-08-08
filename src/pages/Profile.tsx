@@ -163,8 +163,6 @@ export default function Profile() {
 
       <ProgressPage />
 
-      {themeCard}
-
       <Button variant="outline" className="w-full" onClick={async () => { await signOut(); nav("/auth"); }}>
         <LogOut className="h-4 w-4 mr-2" /> Sign out
       </Button>
