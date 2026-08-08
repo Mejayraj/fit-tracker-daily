@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { BrowserMultiFormatReader, IScannerControls } from "@zxing/browser";
+import { BarcodeFormat, DecodeHintType } from "@zxing/library";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
@@ -44,6 +45,7 @@ export default function BarcodeScanner({ date, onLogged }: { date: string; onLog
   const { user } = useAuth();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const controlsRef = useRef<IScannerControls | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const [scanning, setScanning] = useState(false);
   const [loading, setLoading] = useState(false);
   const [manual, setManual] = useState("");
@@ -56,37 +58,73 @@ export default function BarcodeScanner({ date, onLogged }: { date: string; onLog
     return () => {
       controlsRef.current?.stop();
       controlsRef.current = null;
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
     };
   }, []);
 
   const stopScan = () => {
     controlsRef.current?.stop();
     controlsRef.current = null;
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    if (videoRef.current) videoRef.current.srcObject = null;
     setScanning(false);
   };
 
   const startScan = async () => {
     setProduct(null);
+    if (!navigator.mediaDevices?.getUserMedia) {
+      toast.error("Camera not supported on this browser");
+      return;
+    }
+    if (!window.isSecureContext) {
+      toast.error("Camera requires a secure (https) connection");
+      return;
+    }
     setScanning(true);
     try {
-      const reader = new BrowserMultiFormatReader();
-      const controls = await reader.decodeFromVideoDevice(
-        undefined,
-        videoRef.current!,
-        (result, _err, ctrl) => {
-          if (result) {
-            const code = result.getText();
-            ctrl.stop();
-            controlsRef.current = null;
-            setScanning(false);
-            lookup(code);
-          }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
+      streamRef.current = stream;
+
+      const hints = new Map();
+      hints.set(DecodeHintType.POSSIBLE_FORMATS, [
+        BarcodeFormat.EAN_13,
+        BarcodeFormat.EAN_8,
+        BarcodeFormat.UPC_A,
+        BarcodeFormat.UPC_E,
+        BarcodeFormat.CODE_128,
+        BarcodeFormat.CODE_39,
+        BarcodeFormat.ITF,
+      ]);
+      hints.set(DecodeHintType.TRY_HARDER, true);
+      const reader = new BrowserMultiFormatReader(hints, { delayBetweenScanAttempts: 150 });
+
+      // wait a tick so the <video> element is mounted
+      await new Promise((r) => setTimeout(r, 0));
+      if (!videoRef.current) throw new Error("Camera view not ready");
+
+      const controls = await reader.decodeFromStream(stream, videoRef.current, (result) => {
+        if (result) {
+          const code = result.getText();
+          stopScan();
+          lookup(code);
         }
-      );
+      });
       controlsRef.current = controls;
     } catch (err: any) {
-      setScanning(false);
-      toast.error(err?.message || "Camera access denied");
+      stopScan();
+      const name = err?.name;
+      toast.error(
+        name === "NotAllowedError"
+          ? "Camera permission denied — allow camera access and try again"
+          : name === "NotFoundError"
+            ? "No camera found on this device"
+            : err?.message || "Could not start camera",
+      );
     }
   };
 
