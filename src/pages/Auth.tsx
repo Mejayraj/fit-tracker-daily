@@ -91,13 +91,17 @@ export default function Auth() {
       <div className="auth-in relative w-full max-w-md">
         <header className="text-center mb-7">
           <div
-            className="mx-auto flex h-[88px] w-[88px] items-center justify-center rounded-2xl bg-white/5 p-2.5 ring-1 ring-white/10"
-            style={{ boxShadow: "0 0 24px rgba(57,255,20,0.3)" }}
+            className="mx-auto h-20 w-20 overflow-hidden"
+            style={{
+              borderRadius: 20,
+              boxShadow:
+                "0 0 0 1.5px rgba(57,255,20,0.3), 0 0 24px rgba(57,255,20,0.2)",
+            }}
           >
             <img
               src={logo}
               alt="Kadak Fitness logo"
-              className="h-full w-full object-contain"
+              className="h-full w-full object-cover"
             />
           </div>
           <h1 className="mt-4 text-[28px] font-semibold text-white leading-tight">Kadak Fitness</h1>
