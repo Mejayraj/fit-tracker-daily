@@ -90,20 +90,17 @@ export default function Auth() {
 
       <div className="auth-in relative w-full max-w-md">
         <header className="text-center mb-7">
-          <div
-            className="mx-auto h-20 w-20 overflow-hidden"
+          <img
+            src={logo}
+            alt="Kadak Fitness logo"
+            className="mx-auto block object-cover"
             style={{
+              width: 90,
+              height: 90,
               borderRadius: 20,
-              boxShadow:
-                "0 0 0 1.5px rgba(57,255,20,0.3), 0 0 24px rgba(57,255,20,0.2)",
+              filter: "drop-shadow(0 0 12px rgba(57,255,20,0.6))",
             }}
-          >
-            <img
-              src={logo}
-              alt="Kadak Fitness logo"
-              className="h-full w-full object-cover"
-            />
-          </div>
+          />
           <h1 className="mt-4 text-[28px] font-semibold text-white leading-tight">Kadak Fitness</h1>
           <p className="mt-1 text-sm" style={{ color: "#888" }}>Train Hard. Track Smart.</p>
         </header>
