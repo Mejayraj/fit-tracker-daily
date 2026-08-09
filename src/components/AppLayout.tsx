@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Home, Dumbbell, UtensilsCrossed, User } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,12 +21,24 @@ export function PageTitle({ title, subtitle }: { title: string; subtitle?: strin
 }
 
 function BottomNav() {
+  const { pathname } = useLocation();
+  const activeIndex = Math.max(
+    0,
+    tabs.findIndex((t) => (t.end ? pathname === t.to : pathname.startsWith(t.to))),
+  );
   return (
     <nav
       className="fixed bottom-0 inset-x-0 z-50 pointer-events-none"
       style={{ paddingBottom: "calc(16px + env(safe-area-inset-bottom))" }}
     >
-      <div className="glass-nav pointer-events-auto mx-4 flex items-center justify-between px-1.5 py-1.5">
+      <div className="glass-nav pointer-events-auto relative mx-4 flex items-center justify-between px-1.5 py-1.5">
+        <div
+          className="nav-pill pointer-events-none absolute left-1.5 top-1.5 bottom-1.5 rounded-[28px] bg-primary/15"
+          style={{
+            width: `calc((100% - 12px) / ${tabs.length})`,
+            transform: `translateX(${activeIndex * 100}%)`,
+          }}
+        />
         {tabs.map((t) => (
           <NavLink
             key={t.to}
@@ -34,10 +46,8 @@ function BottomNav() {
             end={t.end}
             className={({ isActive }) =>
               cn(
-                "flex flex-1 flex-col items-center gap-0.5 rounded-[28px] px-1 py-2 text-[11px] font-medium transition-colors",
-                isActive
-                  ? "bg-primary/15 text-primary"
-                  : "text-muted-foreground hover:text-foreground",
+                "relative z-10 flex flex-1 flex-col items-center gap-0.5 rounded-[28px] px-1 py-2 text-[11px] font-medium transition-colors",
+                isActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
               )
             }
           >
@@ -52,10 +62,13 @@ function BottomNav() {
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   useAuth();
+  const { pathname } = useLocation();
   return (
     <div className="min-h-screen bg-background">
       <main className="px-4 max-w-lg mx-auto" style={{ paddingTop: 60, paddingBottom: 100 }}>
-        {children}
+        <div key={pathname} className="page-enter">
+          {children}
+        </div>
       </main>
       <BottomNav />
     </div>
