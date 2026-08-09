@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
@@ -90,9 +90,9 @@ export default function Dashboard() {
               <span className="text-xs tracking-widest text-muted-foreground">TODAY</span>
             </div>
             <div className="space-y-5">
-              <MacroBar label="PROTEIN" value={protein} goal={profile?.protein_goal ?? 150} color="primary" />
-              <MacroBar label="CARBS" value={carbs} goal={profile?.carb_goal ?? 250} color="accent" />
-              <MacroBar label="FATS" value={fat} goal={profile?.fat_goal ?? 70} color="primary" />
+              <MacroBar label="PROTEIN" value={protein} goal={profile?.protein_goal ?? 150} color="#39FF14" />
+              <MacroBar label="CARBS" value={carbs} goal={profile?.carb_goal ?? 250} color="#EF9F27" />
+              <MacroBar label="FATS" value={fat} goal={profile?.fat_goal ?? 70} color="#7F77DD" />
             </div>
           </CardContent>
         </Card>
@@ -163,6 +163,13 @@ export default function Dashboard() {
 function CalorieRing({ pct, remaining }: { pct: number; remaining: number }) {
   const r = 88;
   const c = 2 * Math.PI * r;
+  const [animPct, setAnimPct] = useState(0);
+  const raf = useRef<number>();
+  useEffect(() => {
+    setAnimPct(0);
+    raf.current = requestAnimationFrame(() => requestAnimationFrame(() => setAnimPct(pct)));
+    return () => { if (raf.current) cancelAnimationFrame(raf.current); };
+  }, [pct]);
   return (
     <div className="relative h-56 w-56">
       <svg viewBox="0 0 200 200" className="h-full w-full -rotate-90">
@@ -172,8 +179,11 @@ function CalorieRing({ pct, remaining }: { pct: number; remaining: number }) {
           stroke="hsl(var(--primary))"
           strokeWidth="14" fill="none" strokeLinecap="round"
           strokeDasharray={c}
-          strokeDashoffset={c * (1 - pct)}
-          style={{ filter: "drop-shadow(0 0 8px hsl(var(--primary) / 0.6))", transition: "stroke-dashoffset 0.5s" }}
+          strokeDashoffset={c * (1 - animPct)}
+          style={{
+            filter: "drop-shadow(0 0 8px hsl(var(--primary) / 0.6))",
+            transition: "stroke-dashoffset 900ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+          }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -195,18 +205,18 @@ function Stat({ icon, label, value, tone }: { icon: React.ReactNode; label: stri
   );
 }
 
-function MacroBar({ label, value, goal, color }: { label: string; value: number; goal: number; color: "primary" | "accent" }) {
+function MacroBar({ label, value, goal, color }: { label: string; value: number; goal: number; color: string }) {
   const pct = Math.min(100, (value / goal) * 100);
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-xs tracking-widest text-muted-foreground">{label}</span>
-        <span className="text-sm tabular-nums"><span className="font-bold">{Math.round(value)}</span><span className="text-muted-foreground"> / {goal}g</span></span>
+        <span className="text-xs tracking-widest text-foreground">{label}</span>
+        <span className="text-sm tabular-nums text-foreground"><span className="font-bold">{Math.round(value)}</span><span> / {goal}g</span></span>
       </div>
       <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
         <div
-          className={`h-full rounded-full ${color === "primary" ? "bg-gradient-primary shadow-glow-primary" : "bg-gradient-accent shadow-glow-accent"}`}
-          style={{ width: `${pct}%`, transition: "width 0.5s" }}
+          className="h-full rounded-full"
+          style={{ width: `${pct}%`, transition: "width 0.5s", background: color, boxShadow: `0 0 12px ${color}80` }}
         />
       </div>
     </div>
