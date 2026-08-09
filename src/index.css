@@ -37,7 +37,7 @@ All colors MUST be HSL.
 
     --success: 130 90% 55%;
     --warning: 35 92% 60%;
-    --info: 210 90% 60%;
+    --info: 111 100% 54%;
 
     --border: 0 0% 14%;
     --input: 0 0% 14%;
@@ -66,7 +66,7 @@ All colors MUST be HSL.
 
     --sidebar-border: 220 13% 91%;
 
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 111 100% 54%;
   }
 
   .dark {
@@ -96,15 +96,15 @@ All colors MUST be HSL.
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 111 100% 54%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 111 100% 54%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 111 100% 54%;
   }
 
   /* Plain dark theme */
@@ -115,23 +115,23 @@ All colors MUST be HSL.
     --card-foreground: 210 40% 98%;
     --popover: 222 22% 10%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
+    --primary: 111 100% 54%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 217 95% 70%;
+    --primary-glow: 111 100% 65%;
     --secondary: 222 18% 14%;
     --secondary-foreground: 210 40% 95%;
     --muted: 222 16% 16%;
     --muted-foreground: 215 16% 65%;
-    --accent: 217 91% 60%;
+    --accent: 111 100% 54%;
     --accent-foreground: 0 0% 100%;
-    --accent-glow: 217 95% 70%;
+    --accent-glow: 111 100% 65%;
     --border: 222 18% 16%;
     --input: 222 18% 16%;
-    --ring: 217 91% 60%;
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(240 90% 65%));
-    --gradient-accent: linear-gradient(135deg, hsl(217 91% 60%), hsl(240 90% 65%));
-    --glow-primary: 0 0 24px hsl(217 91% 60% / 0.45);
-    --glow-accent: 0 0 24px hsl(217 91% 60% / 0.45);
+    --ring: 111 100% 54%;
+    --gradient-primary: linear-gradient(135deg, hsl(111 100% 54%), hsl(150 95% 55%));
+    --gradient-accent: linear-gradient(135deg, hsl(111 100% 54%), hsl(150 95% 55%));
+    --glow-primary: 0 0 24px hsl(111 100% 54% / 0.45);
+    --glow-accent: 0 0 24px hsl(111 100% 54% / 0.45);
   }
 
   /* Light theme */
@@ -142,25 +142,25 @@ All colors MUST be HSL.
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 217 91% 50%;
+    --primary: 111 90% 45%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 217 91% 65%;
+    --primary-glow: 111 95% 60%;
     --secondary: 210 40% 96%;
     --secondary-foreground: 222 47% 11%;
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
-    --accent: 217 91% 50%;
+    --accent: 111 90% 45%;
     --accent-foreground: 0 0% 100%;
-    --accent-glow: 217 91% 65%;
+    --accent-glow: 111 95% 60%;
     --destructive: 0 84% 55%;
     --destructive-foreground: 0 0% 100%;
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 217 91% 50%;
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 50%), hsl(240 90% 60%));
-    --gradient-accent: linear-gradient(135deg, hsl(217 91% 50%), hsl(240 90% 60%));
-    --glow-primary: 0 0 24px hsl(217 91% 50% / 0.25);
-    --glow-accent: 0 0 24px hsl(217 91% 50% / 0.25);
+    --ring: 111 90% 45%;
+    --gradient-primary: linear-gradient(135deg, hsl(111 90% 45%), hsl(150 90% 45%));
+    --gradient-accent: linear-gradient(135deg, hsl(111 90% 45%), hsl(150 90% 45%));
+    --glow-primary: 0 0 24px hsl(111 90% 45% / 0.25);
+    --glow-accent: 0 0 24px hsl(111 90% 45% / 0.25);
   }
 
   /* Custom theme — primary hue is set via inline --custom-hue. */
@@ -254,8 +254,8 @@ All colors MUST be HSL.
   }
   body.theme-dark {
     background-image:
-      radial-gradient(ellipse at top left, hsl(217 91% 30% / 0.15), transparent 55%),
-      radial-gradient(ellipse at bottom right, hsl(240 90% 35% / 0.12), transparent 55%);
+      radial-gradient(ellipse at top left, hsl(111 100% 30% / 0.15), transparent 55%),
+      radial-gradient(ellipse at bottom right, hsl(150 90% 30% / 0.12), transparent 55%);
   }
   body.theme-custom {
     background-image:
