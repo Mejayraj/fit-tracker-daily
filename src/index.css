@@ -432,3 +432,17 @@ button:disabled:active, [aria-disabled='true']:active {
   transform: none !important;
   opacity: 0.5 !important;
 }
+
+/* Radix sometimes leaves `pointer-events: none` on <body> after a Select/Popover
+   closes, which silently kills every subsequent click (e.g. the Log food button). */
+body[style*="pointer-events: none"] {
+  pointer-events: auto !important;
+}
+
+/* Interactive controls must always stay clickable */
+button, [role='button'] {
+  pointer-events: auto;
+}
+button:disabled {
+  pointer-events: none;
+}
