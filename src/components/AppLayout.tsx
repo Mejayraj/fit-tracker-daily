@@ -66,7 +66,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <main className="px-4 max-w-lg mx-auto" style={{ paddingTop: 60, paddingBottom: 100 }}>
-        <div key={pathname} className="page-enter">
+        <div key={pathname}>
           {children}
         </div>
       </main>
