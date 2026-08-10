@@ -89,7 +89,10 @@ export default function Food() {
 
   const addFood = async () => {
     console.log("[Food] Log food clicked", { selected, customName, grams, meal });
-    if (!user) return;
+    if (!user) {
+      toast.error("Sign in required");
+      return;
+    }
     const name = selected?.name ?? customName.trim();
     if (!name) {
       toast.error("Pick a food or enter a name");
