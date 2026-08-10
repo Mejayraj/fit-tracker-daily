@@ -398,3 +398,20 @@ All colors MUST be HSL.
   .bg-gradient-primary { background-image: var(--gradient-primary); }
   .bg-gradient-accent { background-image: var(--gradient-accent); }
 }
+
+/* Global instant tap feedback */
+* { -webkit-tap-highlight-color: transparent; }
+
+button, a, [role='button'], [tabindex], .cursor-pointer, .clickable {
+  transition: transform 80ms ease-out, opacity 80ms ease-out !important;
+}
+
+button:active, a:active, [role='button']:active, [tabindex]:active, .cursor-pointer:active, .clickable:active {
+  transform: scale(0.96) !important;
+  opacity: 0.82 !important;
+}
+
+button:disabled:active, [aria-disabled='true']:active {
+  transform: none !important;
+  opacity: 0.5 !important;
+}
