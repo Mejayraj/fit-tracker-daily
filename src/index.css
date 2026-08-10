@@ -399,6 +399,23 @@ All colors MUST be HSL.
   .bg-gradient-accent { background-image: var(--gradient-accent); }
 }
 
+@layer utilities {
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+  }
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 25%,
+      rgba(255, 255, 255, 0.10) 50%,
+      rgba(255, 255, 255, 0.04) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s linear infinite;
+  }
+}
+
 /* Global instant tap feedback */
 * { -webkit-tap-highlight-color: transparent; }
 
