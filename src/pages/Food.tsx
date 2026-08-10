@@ -88,6 +88,7 @@ export default function Food() {
   }, [user, logs.length]);
 
   const addFood = async () => {
+    console.log("[Food] Log food clicked", { selected, customName, grams, meal });
     if (!user) return;
     const name = selected?.name ?? customName.trim();
     if (!name) {
@@ -277,7 +278,12 @@ export default function Food() {
             </div>
           )}
 
-          <Button onClick={addFood} disabled={loading} className="w-full">
+          <Button
+            onClick={addFood}
+            disabled={loading}
+            className="w-full relative z-10"
+            style={{ pointerEvents: loading ? "none" : "auto" }}
+          >
             <Plus className="h-4 w-4 mr-1" /> Log food
           </Button>
         </CardContent>
