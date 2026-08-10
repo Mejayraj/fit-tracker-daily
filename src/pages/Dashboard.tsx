@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Activity, Apple, Dumbbell, Flame, Plus, Utensils } from "lucide-react";
 import ProfileMenu from "@/components/ProfileMenu";
+import { RingSkeleton, MacrosSkeleton, RowsSkeleton } from "@/components/Skeleton";
 
 type Profile = { display_name: string | null; calorie_goal: number; protein_goal: number; carb_goal: number; fat_goal: number };
 
@@ -17,8 +18,9 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [foods, setFoods] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const today = format(new Date(), "yyyy-MM-dd");
-  const { workouts: hevyWorkouts } = useHevy(user?.id);
+  const { workouts: hevyWorkouts, status: hevyStatus } = useHevy(user?.id);
 
   useEffect(() => {
     if (!user) return;
@@ -31,8 +33,12 @@ export default function Dashboard() {
       setProfile(p.data as any);
       setFoods(f.data ?? []);
       setWorkouts(w.data ?? []);
+      setLoading(false);
     })();
   }, [user, today]);
+  const hevyLoading = !!user && hevyStatus === null;
+  const caloriesLoading = loading || hevyLoading;
+
 
   const eaten = foods.reduce((s, f) => s + (f.calories || 0), 0);
   const hevyBurnedToday = hevyWorkouts
@@ -73,12 +79,18 @@ export default function Dashboard() {
         {/* Calorie ring */}
         <Card className="shadow-card">
           <CardContent className="p-6 flex flex-col items-center">
+            {caloriesLoading ? (
+              <RingSkeleton />
+            ) : (
+              <>
             <CalorieRing pct={ringPct} remaining={remaining} />
             <div className="grid grid-cols-3 gap-6 mt-6 text-center w-full">
               <Stat icon={<Apple className="h-3.5 w-3.5" />} label="EATEN" value={eaten} tone="primary" />
               <Stat icon={<Flame className="h-3.5 w-3.5" />} label="BURNED" value={burned} tone="accent" />
               <Stat icon={<Activity className="h-3.5 w-3.5" />} label="NET" value={eaten - burned} tone={eaten - burned >= 0 ? "primary" : "accent"} />
             </div>
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -89,11 +101,13 @@ export default function Dashboard() {
               <h2 className="text-xl font-bold">Macros</h2>
               <span className="text-xs tracking-widest text-muted-foreground">TODAY</span>
             </div>
+            {loading ? <MacrosSkeleton /> : (
             <div className="space-y-5">
               <MacroBar label="PROTEIN" value={protein} goal={profile?.protein_goal ?? 150} color="#39FF14" />
               <MacroBar label="CARBS" value={carbs} goal={profile?.carb_goal ?? 250} color="#EF9F27" />
               <MacroBar label="FATS" value={fat} goal={profile?.fat_goal ?? 70} color="#7F77DD" />
             </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -107,9 +121,11 @@ export default function Dashboard() {
                 <Utensils className="h-5 w-5 text-primary" />
                 <h3 className="text-lg font-bold">Meals</h3>
               </div>
-              <span className="text-xs text-muted-foreground">{foods.length} logged</span>
+              <span className="text-xs text-muted-foreground">{loading ? "" : `${foods.length} logged`}</span>
             </div>
-            {foods.length === 0 ? (
+            {loading ? (
+              <RowsSkeleton rows={3} />
+            ) : foods.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-10">No meals yet today. Tap Log Meal to search foods.</p>
             ) : (
               <ul className="space-y-2">
@@ -134,9 +150,11 @@ export default function Dashboard() {
                 <Dumbbell className="h-5 w-5 text-accent" />
                 <h3 className="text-lg font-bold">Workouts</h3>
               </div>
-              <span className="text-xs text-muted-foreground">{workouts.length} logged</span>
+              <span className="text-xs text-muted-foreground">{caloriesLoading ? "" : `${workouts.length} logged`}</span>
             </div>
-            {workouts.length === 0 ? (
+            {caloriesLoading ? (
+              <RowsSkeleton rows={2} />
+            ) : workouts.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-10">No workouts yet today. Tap Log Workout.</p>
             ) : (
               <ul className="space-y-2">
