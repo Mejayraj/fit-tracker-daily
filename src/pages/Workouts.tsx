@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Dumbbell, Trash2, Plus, Flame, ClipboardList, Save, X, Check, Bike, Footprints, Waves, Mountain, Activity } from "lucide-react";
+import { Dumbbell, Trash2, Plus, Flame, ClipboardList, Search, Save, X, Check, Bike, Footprints, Waves, Mountain, Activity } from "lucide-react";
 import { EXERCISE_TYPES, estimateCaloriesBurned } from "@/lib/calories";
 import type { HevyWorkout } from "@/hooks/useHevy";
 
