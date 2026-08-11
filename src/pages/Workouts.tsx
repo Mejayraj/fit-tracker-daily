@@ -2,19 +2,15 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Dumbbell, Trash2, Plus, Flame, ClipboardList, Search, Save, X, Check, Bike, Footprints, Waves, Mountain, Activity } from "lucide-react";
 import { EXERCISE_TYPES, estimateCaloriesBurned } from "@/lib/calories";
-import StravaActivities from "@/components/StravaActivities";
-import HevyWorkouts from "@/components/HevyWorkouts";
-import { useHevy } from "@/hooks/useHevy";
+import type { HevyWorkout } from "@/hooks/useHevy";
 
 type Workout = {
   id: string; exercise_type: string; exercise_name: string;
@@ -58,14 +54,19 @@ const sportIcon = (sport: string) => {
   return Activity;
 };
 
-export default function Workouts() {
+export default function Workouts({
+  hevyWorkouts = [],
+  refreshKey = 0,
+}: {
+  hevyWorkouts?: HevyWorkout[];
+  refreshKey?: number;
+}) {
   const { user } = useAuth();
   const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [list, setList] = useState<Workout[]>([]);
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [bodyWeight, setBodyWeight] = useState<number | null>(null);
   const [stravaToday, setStravaToday] = useState<StravaActivity[]>([]);
-  const { status: hevyStatus, workouts: hevyWorkouts, syncing: hevySyncing, sync: hevySync } = useHevy(user?.id);
 
   // log form
   const [type, setType] = useState("strength");
@@ -75,7 +76,6 @@ export default function Workouts() {
   const [weight, setWeight] = useState<number | "">("");
   const [duration, setDuration] = useState<number | "">("");
   const [busy, setBusy] = useState(false);
-  const [showLog, setShowLog] = useState(false);
 
   // routine builder / runner
   const [showBuilder, setShowBuilder] = useState(false);
@@ -106,7 +106,7 @@ export default function Workouts() {
     setBodyWeight(data?.body_weight_kg ? Number(data.body_weight_kg) : null);
   };
 
-  useEffect(() => { loadDay(); }, [user, date]);
+  useEffect(() => { loadDay(); }, [user, date, refreshKey]);
   useEffect(() => { loadRoutines(); loadProfile(); }, [user]);
 
   useEffect(() => {
@@ -147,7 +147,6 @@ export default function Workouts() {
     toast.success(`Logged ${ex.name} · ${cal} kcal`);
     if (!override) {
       setName(""); setSets(""); setReps(""); setWeight(""); setDuration("");
-      setShowLog(false);
     }
     loadDay();
   };
@@ -204,75 +203,13 @@ export default function Workouts() {
 
   return (
     <div className="space-y-5 pb-4">
-      {/* Header — Hevy style */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold tracking-tight leading-tight">Workout Log</h2>
-          <p className="text-sm text-muted-foreground">{format(new Date(date), "EEEE, MMM d")}</p>
+          <h2 className="text-xl font-bold tracking-tight leading-tight">{format(new Date(date), "EEEE")}</h2>
+          <p className="text-sm text-muted-foreground">{format(new Date(date), "MMMM d, yyyy")}</p>
         </div>
         <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-auto" />
       </div>
-
-      <button
-        type="button"
-        aria-label="Log a new workout"
-        onClick={() => setShowLog(true)}
-        className="fixed z-50 right-5 bottom-[104px] h-14 w-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-[0_8px_28px_hsl(var(--primary)/0.45)] active:scale-95 transition"
-      >
-        <Plus className="h-6 w-6" />
-      </button>
-
-      {/* Quick start */}
-      <section className="space-y-2">
-        <h2 className="text-base font-semibold">Quick Start</h2>
-        <Dialog open={showLog} onOpenChange={setShowLog}>
-          <DialogTrigger asChild>
-            <button className="w-full rounded-xl bg-secondary/60 hover:bg-secondary px-4 py-4 flex items-center gap-3 text-left transition">
-              <Plus className="h-5 w-5 text-primary" />
-              <span className="font-medium">Log Exercise</span>
-            </button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Log exercise</DialogTitle></DialogHeader>
-            <form onSubmit={submit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label>Type</Label>
-                  <Select value={type} onValueChange={setType}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {EXERCISE_TYPES.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="en">Exercise</Label>
-                  <Input id="en" value={name} onChange={(e) => setName(e.target.value)} placeholder="Bench Press" maxLength={80} />
-                </div>
-              </div>
-              {isCardio ? (
-                <div>
-                  <Label htmlFor="dur">Duration (minutes)</Label>
-                  <Input id="dur" type="number" min={1} max={600} value={duration} onChange={(e) => setDuration(e.target.value === "" ? "" : Number(e.target.value))} />
-                </div>
-              ) : (
-                <div className="grid grid-cols-3 gap-3">
-                  <div><Label htmlFor="s">Sets</Label><Input id="s" type="number" min={1} max={50} value={sets} onChange={(e) => setSets(e.target.value === "" ? "" : Number(e.target.value))} /></div>
-                  <div><Label htmlFor="r">Reps</Label><Input id="r" type="number" min={1} max={200} value={reps} onChange={(e) => setReps(e.target.value === "" ? "" : Number(e.target.value))} /></div>
-                  <div><Label htmlFor="w">Weight (kg)</Label><Input id="w" type="number" min={0} max={1000} step="0.5" value={weight} onChange={(e) => setWeight(e.target.value === "" ? "" : Number(e.target.value))} /></div>
-                </div>
-              )}
-              <div>
-                <Label htmlFor="bw" className="text-xs">Your body weight (kg) — improves calorie estimate</Label>
-                <Input id="bw" type="number" min={20} max={300} step="0.1" value={bodyWeight ?? ""} onChange={(e) => saveBodyWeight(Number(e.target.value))} placeholder="70" />
-              </div>
-              <Button type="submit" disabled={busy} className="w-full">
-                <Plus className="h-4 w-4 mr-1" /> Log
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </section>
 
       {/* Routines */}
       <section className="space-y-2">
@@ -385,18 +322,6 @@ export default function Workouts() {
           ))}
         </div>
       </section>
-
-      {/* Hevy workouts */}
-      <HevyWorkouts
-        workouts={hevyWorkouts}
-        excludeDate={date}
-        connected={!!hevyStatus?.connected}
-        syncing={hevySyncing}
-        onSync={() => { hevySync().catch((e) => toast.error(e instanceof Error ? e.message : "Sync failed")); }}
-      />
-
-      {/* Strava activities */}
-      <StravaActivities excludeDate={date} />
 
       {/* Routine builder */}
       <RoutineBuilder

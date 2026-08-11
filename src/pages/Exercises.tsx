@@ -2,15 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { Dumbbell, Search, Loader2, Plus } from "lucide-react";
 import { estimateCaloriesBurned } from "@/lib/calories";
+import { cn } from "@/lib/utils";
 
 type Muscle = { id: number; name: string; name_en: string };
 type WgerExercise = {
@@ -23,13 +22,26 @@ type WgerExercise = {
 
 const muscleLabel = (m: Muscle) => (m.name_en && m.name_en.trim()) || m.name;
 
-export default function Exercises() {
+const GROUPS = ["All", "Chest", "Back", "Legs", "Shoulders", "Arms", "Core", "Cardio"] as const;
+type Group = (typeof GROUPS)[number];
+
+const GROUP_MATCHERS: Record<Exclude<Group, "All">, string[]> = {
+  Chest: ["chest", "pectoral"],
+  Back: ["back", "lat", "trapezius", "rhomboid"],
+  Legs: ["leg", "quadricep", "hamstring", "glute", "calve", "calf", "soleus"],
+  Shoulders: ["shoulder", "deltoid"],
+  Arms: ["arm", "bicep", "tricep", "brachii", "brachialis", "forearm"],
+  Core: ["abs", "abdominis", "core", "oblique"],
+  Cardio: ["cardio"],
+};
+
+export default function Exercises({ onLogged }: { onLogged?: () => void } = {}) {
   const { user } = useAuth();
   const [items, setItems] = useState<WgerExercise[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
-  const [muscle, setMuscle] = useState<string>("all");
+  const [group, setGroup] = useState<Group>("All");
   const [selected, setSelected] = useState<WgerExercise | null>(null);
   const [bodyWeight, setBodyWeight] = useState<number | null>(null);
 
@@ -73,51 +85,49 @@ export default function Exercises() {
       .then(({ data }) => setBodyWeight(data?.body_weight_kg ? Number(data.body_weight_kg) : null));
   }, [user]);
 
-  const muscleOptions = useMemo(() => {
-    const set = new Map<string, string>();
-    items.forEach((e) => [...e.muscles, ...e.muscles_secondary].forEach((m) => {
-      const label = muscleLabel(m);
-      if (label) set.set(label.toLowerCase(), label);
-    }));
-    return Array.from(set.values()).sort();
-  }, [items]);
-
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return items.filter((e) => {
       if (q && !e.name.toLowerCase().includes(q)) return false;
-      if (muscle !== "all") {
-        const all = [...e.muscles, ...e.muscles_secondary].map(muscleLabel);
-        if (!all.includes(muscle)) return false;
+      if (group !== "All") {
+        const hay = [e.category, ...[...e.muscles, ...e.muscles_secondary].map(muscleLabel)]
+          .join(" ")
+          .toLowerCase();
+        if (!GROUP_MATCHERS[group].some((k) => hay.includes(k))) return false;
       }
       return true;
     });
-  }, [items, query, muscle]);
+  }, [items, query, group]);
 
   return (
     <div className="space-y-5 pb-4">
-      <div>
-        <h2 className="text-xl font-bold tracking-tight leading-tight">Exercise Library</h2>
-        <p className="text-sm text-muted-foreground">Browse exercises and log them to your workout log.</p>
+      <div className="relative">
+        <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search exercises..."
+          className="pl-9"
+        />
       </div>
 
-      <div className="flex gap-2 flex-col sm:flex-row">
-        <div className="relative flex-1">
-          <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search exercises..."
-            className="pl-9"
-          />
+      <div className="-mx-4 px-4 overflow-x-auto">
+        <div className="flex gap-2 w-max">
+          {GROUPS.map((g) => (
+            <button
+              key={g}
+              onClick={() => setGroup(g)}
+              className={cn(
+                "rounded-full px-3.5 py-1.5 text-xs font-medium border transition-colors whitespace-nowrap",
+                group === g
+                  ? "bg-primary/15 text-primary border-primary/30"
+                  : "bg-secondary/50 text-muted-foreground border-transparent",
+              )}
+            >
+              {g}
+            </button>
+          ))}
         </div>
-        <Select value={muscle} onValueChange={setMuscle}>
-          <SelectTrigger className="sm:w-56"><SelectValue placeholder="All muscles" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All muscles</SelectItem>
-            {muscleOptions.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
-          </SelectContent>
-        </Select>
       </div>
 
       {loading && (
@@ -136,12 +146,12 @@ export default function Exercises() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3">
         {filtered.map((ex) => (
           <button
             key={ex.id}
             onClick={() => setSelected(ex)}
-            className="text-left rounded-xl bg-secondary/60 hover:bg-secondary border border-border/60 p-4 transition"
+            className="text-left rounded-2xl bg-secondary/60 hover:bg-secondary border border-border/60 p-4 transition"
           >
             <div className="flex items-start gap-3">
               <div className="rounded-lg bg-primary/15 p-2"><Dumbbell className="h-4 w-4 text-primary" /></div>
@@ -165,7 +175,7 @@ export default function Exercises() {
 
       <LogExerciseDialog
         exercise={selected}
-        onClose={() => setSelected(null)}
+        onClose={(logged) => { setSelected(null); if (logged) onLogged?.(); }}
         bodyWeight={bodyWeight}
         userId={user?.id}
       />
@@ -177,7 +187,7 @@ function LogExerciseDialog({
   exercise, onClose, bodyWeight, userId,
 }: {
   exercise: WgerExercise | null;
-  onClose: () => void;
+  onClose: (logged?: boolean) => void;
   bodyWeight: number | null;
   userId?: string;
 }) {
@@ -217,19 +227,19 @@ function LogExerciseDialog({
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success(`Logged ${exercise.name} · ${cal} kcal`);
-    onClose();
+    onClose(true);
   };
 
   return (
-    <Dialog open={!!exercise} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+    <Sheet open={!!exercise} onOpenChange={(o) => !o && onClose()}>
+      <SheetContent side="bottom" className="rounded-t-3xl max-h-[92vh] overflow-y-auto">
+        <SheetHeader className="text-left">
+          <SheetTitle className="flex items-center gap-2">
             <Dumbbell className="h-5 w-5 text-primary" /> {exercise?.name}
-          </DialogTitle>
-        </DialogHeader>
+          </SheetTitle>
+        </SheetHeader>
         {exercise && (
-          <form onSubmit={submit} className="space-y-4">
+          <form onSubmit={submit} className="space-y-4 pb-4">
             <div className="text-xs text-muted-foreground">
               {exercise.category}
               {exercise.muscles.length > 0 && ` · ${exercise.muscles.map(muscleLabel).join(", ")}`}
@@ -260,7 +270,7 @@ function LogExerciseDialog({
             </Button>
           </form>
         )}
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

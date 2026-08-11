@@ -15,6 +15,8 @@ import FastingTimer from "@/components/FastingTimer";
 import UsdaFoodSearch from "@/components/UsdaFoodSearch";
 import BarcodeScanner from "@/components/BarcodeScanner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import Fab from "@/components/train/Fab";
 
 type FoodLog = {
   id: string;
@@ -46,6 +48,7 @@ export default function Food() {
   const [customCarbs, setCustomCarbs] = useState<number | "">("");
   const [customFat, setCustomFat] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
 
   const results = useMemo(() => searchFoods(query), [query]);
 
@@ -129,6 +132,7 @@ export default function Food() {
     setCustomMode(false);
     setQuery("");
     setGrams(100);
+    setAddOpen(false);
     loadDay();
   };
 
@@ -163,25 +167,26 @@ export default function Food() {
         <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-auto" />
       </div>
 
-      {/* Add food */}
-      <Card>
-        <CardHeader><CardTitle className="text-lg">Add a food</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
+      {/* Add food sheet */}
+      <Sheet open={addOpen} onOpenChange={setAddOpen}>
+        <SheetContent side="bottom" className="rounded-t-3xl max-h-[92vh] overflow-y-auto">
+          <SheetHeader className="text-left"><SheetTitle>Log a meal</SheetTitle></SheetHeader>
+          <div className="space-y-4 pb-4">
           <Tabs defaultValue="search" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="search">Search</TabsTrigger>
               <TabsTrigger value="scan">Scan barcode</TabsTrigger>
             </TabsList>
             <TabsContent value="search" className="mt-3">
-              <UsdaFoodSearch date={date} onLogged={loadDay} />
+              <UsdaFoodSearch date={date} onLogged={() => { loadDay(); setAddOpen(false); }} />
             </TabsContent>
             <TabsContent value="scan" className="mt-3">
-              <BarcodeScanner date={date} onLogged={loadDay} />
+              <BarcodeScanner date={date} onLogged={() => { loadDay(); setAddOpen(false); }} />
             </TabsContent>
           </Tabs>
           <div className="relative">
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
-            <div className="relative flex justify-center text-xs"><span className="bg-card px-2 text-muted-foreground">or quick add</span></div>
+            <div className="relative flex justify-center text-xs"><span className="bg-background px-2 text-muted-foreground">or quick add</span></div>
           </div>
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -289,8 +294,9 @@ export default function Food() {
           >
             <Plus className="h-4 w-4 mr-1" /> Log food
           </Button>
-        </CardContent>
-      </Card>
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* Daily totals */}
       <Card>
@@ -365,6 +371,8 @@ export default function Food() {
       </Card>
 
       <FastingTimer />
+
+      <Fab label="Log Meal" extended onClick={() => setAddOpen(true)} />
     </div>
   );
 }
