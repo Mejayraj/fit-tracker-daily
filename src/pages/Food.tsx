@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { hapticLight } from "@/lib/haptics";
 import { Trash2, Plus, Search } from "lucide-react";
 import { format } from "date-fns";
 import FastingTimer from "@/components/FastingTimer";
@@ -125,6 +126,7 @@ export default function Food() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
+    hapticLight();
     toast.success(`Logged ${name}`);
     setSelected(null);
     setCustomName("");
@@ -178,10 +180,10 @@ export default function Food() {
               <TabsTrigger value="scan">Scan barcode</TabsTrigger>
             </TabsList>
             <TabsContent value="search" className="mt-3">
-              <UsdaFoodSearch date={date} onLogged={() => { loadDay(); setAddOpen(false); }} />
+              <UsdaFoodSearch date={date} onLogged={() => { hapticLight(); loadDay(); setAddOpen(false); }} />
             </TabsContent>
             <TabsContent value="scan" className="mt-3">
-              <BarcodeScanner date={date} onLogged={() => { loadDay(); setAddOpen(false); }} />
+              <BarcodeScanner date={date} onLogged={() => { hapticLight(); loadDay(); setAddOpen(false); }} />
             </TabsContent>
           </Tabs>
           <div className="relative">

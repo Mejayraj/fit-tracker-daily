@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
+import { hapticLight } from "@/lib/haptics";
 import { Dumbbell, Search, Loader2, Plus } from "lucide-react";
 import { estimateCaloriesBurned } from "@/lib/calories";
 import { cn } from "@/lib/utils";
@@ -226,6 +227,7 @@ function LogExerciseDialog({
     });
     setBusy(false);
     if (error) return toast.error(error.message);
+    hapticLight();
     toast.success(`Logged ${exercise.name} · ${cal} kcal`);
     onClose(true);
   };

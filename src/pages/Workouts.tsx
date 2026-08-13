@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { hapticLight, hapticSessionSaved } from "@/lib/haptics";
 import { Dumbbell, Trash2, Plus, Flame, ClipboardList, Search, Save, X, Check, Bike, Footprints, Waves, Mountain, Activity } from "lucide-react";
 import { EXERCISE_TYPES, estimateCaloriesBurned } from "@/lib/calories";
 import type { HevyWorkout } from "@/hooks/useHevy";
@@ -144,6 +145,7 @@ export default function Workouts({
     });
     setBusy(false);
     if (error) return toast.error(error.message);
+    hapticLight();
     toast.success(`Logged ${ex.name} · ${cal} kcal`);
     if (!override) {
       setName(""); setSets(""); setReps(""); setWeight(""); setDuration("");
@@ -181,6 +183,7 @@ export default function Workouts({
       user_id: user.id, name: rname.slice(0, 80), exercises: exercises as any,
     });
     if (error) return toast.error(error.message);
+    hapticSessionSaved();
     toast.success("Routine saved");
     loadRoutines();
   };
@@ -394,6 +397,7 @@ function RoutineBuilder({ open, onClose, onSaved, userId }: { open: boolean; onC
       user_id: userId, name: rname.trim().slice(0, 80), exercises: items as any,
     });
     if (error) return toast.error(error.message);
+    hapticSessionSaved();
     toast.success("Routine saved");
     setRname(""); setItems([]);
     onSaved();
