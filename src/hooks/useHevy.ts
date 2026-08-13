@@ -1,3 +1,4 @@
+import { hapticSync } from "@/lib/haptics";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -53,6 +54,7 @@ export function useHevy(userId?: string) {
       if ((data as any)?.error) throw new Error((data as any).error);
       await loadWorkouts();
       await loadStatus();
+      hapticSync();
       return (data as any)?.synced ?? 0;
     } finally {
       setSyncing(false);
