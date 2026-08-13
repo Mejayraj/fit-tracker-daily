@@ -8,7 +8,6 @@ import Workouts from "./Workouts";
 import Exercises from "./Exercises";
 import TrainHistory from "@/components/train/TrainHistory";
 import LogExerciseSheet from "@/components/train/LogExerciseSheet";
-import Fab from "@/components/train/Fab";
 import { cn } from "@/lib/utils";
 
 const TABS = ["Log", "History", "Exercises"] as const;
@@ -60,8 +59,6 @@ export default function Train() {
         />
       )}
       {tab === "Exercises" && <Exercises onLogged={() => setRefreshKey((k) => k + 1)} />}
-
-      <Fab label="Log exercise" onClick={() => setSheetOpen(true)} />
       <LogExerciseSheet
         open={sheetOpen}
         onOpenChange={setSheetOpen}
