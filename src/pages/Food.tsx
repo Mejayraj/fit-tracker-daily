@@ -17,7 +17,7 @@ import UsdaFoodSearch from "@/components/UsdaFoodSearch";
 import BarcodeScanner from "@/components/BarcodeScanner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import Fab from "@/components/train/Fab";
+import { useLogMealRequest } from "@/lib/quickActions";
 
 type FoodLog = {
   id: string;
@@ -50,6 +50,8 @@ export default function Food() {
   const [customFat, setCustomFat] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+
+  useLogMealRequest(() => setAddOpen(true));
 
   const results = useMemo(() => searchFoods(query), [query]);
 
@@ -373,8 +375,6 @@ export default function Food() {
       </Card>
 
       <FastingTimer />
-
-      <Fab label="Log Meal" extended onClick={() => setAddOpen(true)} />
     </div>
   );
 }

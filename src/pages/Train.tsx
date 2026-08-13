@@ -7,8 +7,6 @@ import { useHevy } from "@/hooks/useHevy";
 import Workouts from "./Workouts";
 import Exercises from "./Exercises";
 import TrainHistory from "@/components/train/TrainHistory";
-import LogExerciseSheet from "@/components/train/LogExerciseSheet";
-import Fab from "@/components/train/Fab";
 import { cn } from "@/lib/utils";
 
 const TABS = ["Log", "History", "Exercises"] as const;
@@ -17,7 +15,6 @@ type Tab = (typeof TABS)[number];
 export default function Train() {
   const { user } = useAuth();
   const [tab, setTab] = useState<Tab>("Log");
-  const [sheetOpen, setSheetOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const today = format(new Date(), "yyyy-MM-dd");
   const { status, workouts, syncing, sync } = useHevy(user?.id);
@@ -60,14 +57,6 @@ export default function Train() {
         />
       )}
       {tab === "Exercises" && <Exercises onLogged={() => setRefreshKey((k) => k + 1)} />}
-
-      <Fab label="Log exercise" onClick={() => setSheetOpen(true)} />
-      <LogExerciseSheet
-        open={sheetOpen}
-        onOpenChange={setSheetOpen}
-        date={today}
-        onLogged={() => { setRefreshKey((k) => k + 1); setTab("Log"); }}
-      />
     </div>
   );
 }
