@@ -152,7 +152,7 @@ export default function Exercises({ onLogged }: { onLogged?: () => void } = {}) 
           <button
             key={ex.id}
             onClick={() => setSelected(ex)}
-            className="text-left rounded-2xl bg-secondary/60 hover:bg-secondary border border-border/60 p-4 transition"
+            className="text-left glass-surface hover:bg-white/[0.07] p-4 transition"
           >
             <div className="flex items-start gap-3">
               <div className="rounded-lg bg-primary/15 p-2"><Dumbbell className="h-4 w-4 text-primary" /></div>
