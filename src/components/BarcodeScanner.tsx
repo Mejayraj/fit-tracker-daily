@@ -223,7 +223,7 @@ export default function BarcodeScanner({ date, onLogged }: { date: string; onLog
       )}
 
       {product && (
-        <div className="rounded-lg border bg-card p-3 space-y-3">
+        <div className="glass-surface p-3 space-y-3">
           <div className="flex gap-3">
             {product.imageUrl && (
               <img src={product.imageUrl} alt={product.name} className="h-16 w-16 rounded-md object-cover bg-secondary" />

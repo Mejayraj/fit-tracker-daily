@@ -88,7 +88,7 @@ export default function StravaActivities({ excludeDate }: { excludeDate?: string
           {visible.map((a) => {
             const Icon = sportIcon(a.sport_type);
             return (
-              <div key={a.id} className="rounded-xl bg-secondary/60 px-3 py-3 flex items-center gap-3">
+              <div key={a.id} className="glass-surface px-3 py-3 flex items-center gap-3">
                 <div className="h-10 w-10 rounded-lg bg-[hsl(16,100%,50%)]/15 text-[hsl(16,100%,50%)] flex items-center justify-center shrink-0">
                   <Icon className="h-5 w-5" />
                 </div>

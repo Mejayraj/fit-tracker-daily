@@ -138,7 +138,7 @@ export default function UsdaFoodSearch({ date, onLogged }: { date: string; onLog
             const g = grams[f.fdcId] ?? 100;
             const factor = g / 100;
             return (
-              <div key={f.fdcId} className="rounded-lg border bg-card p-3 space-y-2">
+              <div key={f.fdcId} className="glass-surface p-3 space-y-2">
                 <div>
                   <div className="font-medium text-sm leading-tight">{f.description}</div>
                   {f.brandName && <div className="text-xs text-muted-foreground">{f.brandName}</div>}

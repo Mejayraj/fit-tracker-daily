@@ -65,7 +65,7 @@ export default function TrainHistory({
         ) : (
           <div className="space-y-2">
             {list.map((w) => (
-              <div key={w.id} className="rounded-2xl bg-secondary/60 px-3 py-3 flex items-center justify-between gap-3">
+              <div key={w.id} className="glass-surface px-3 py-3 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="h-9 w-9 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0">
                     <Dumbbell className="h-4 w-4" />
