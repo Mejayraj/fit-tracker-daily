@@ -3,6 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Home, Dumbbell, UtensilsCrossed, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import QuickActionBar from "@/components/QuickActionBar";
 
 export const tabs = [
   { to: "/", label: "Home", icon: Home, end: true },
@@ -65,11 +66,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   return (
     <div className="min-h-screen bg-background">
-      <main className="px-4 max-w-lg mx-auto" style={{ paddingTop: 60, paddingBottom: 100 }}>
+      <main className="px-4 max-w-lg mx-auto" style={{ paddingTop: 60, paddingBottom: 140 }}>
         <div key={pathname}>
           {children}
         </div>
       </main>
+      <QuickActionBar />
       <BottomNav />
     </div>
   );
