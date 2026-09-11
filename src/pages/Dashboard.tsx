@@ -1,12 +1,11 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useHevy } from "@/hooks/useHevy";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Activity, Apple, Dumbbell, Flame, Plus, Utensils } from "lucide-react";
+import { Activity, Apple, Dumbbell, Flame, Utensils } from "lucide-react";
 import ProfileMenu from "@/components/ProfileMenu";
 import { RingSkeleton, MacrosSkeleton, RowsSkeleton } from "@/components/Skeleton";
 
@@ -14,7 +13,7 @@ type Profile = { display_name: string | null; calorie_goal: number; protein_goal
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const nav = useNavigate();
+  
   const [profile, setProfile] = useState<Profile | null>(null);
   const [foods, setFoods] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
@@ -64,14 +63,6 @@ export default function Dashboard() {
             </p>
           </div>
           <ProfileMenu />
-        </div>
-        <div className="flex items-center gap-2">
-          <Button onClick={() => nav("/train")} className="gap-2 bg-gradient-accent text-accent-foreground shadow-glow-accent hover:opacity-90">
-            <Dumbbell className="h-4 w-4" /> Log Workout
-          </Button>
-          <Button onClick={() => nav("/food")} className="gap-2 bg-gradient-primary text-primary-foreground shadow-glow-primary hover:opacity-90">
-            <Plus className="h-4 w-4" /> Log Meal
-          </Button>
         </div>
       </header>
 

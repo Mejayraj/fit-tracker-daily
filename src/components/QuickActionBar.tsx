@@ -6,19 +6,19 @@ import LogExerciseSheet from "@/components/train/LogExerciseSheet";
 import { requestLogMeal } from "@/lib/quickActions";
 
 const btnStyle: React.CSSProperties = {
-  width: "48%",
-  height: 40,
-  borderRadius: 20,
-  background: "rgba(57,255,20,0.12)",
-  border: "1px solid rgba(57,255,20,0.25)",
+  width: 52,
+  height: 52,
+  borderRadius: "50%",
+  background: "rgba(255,255,255,0.06)",
+  backdropFilter: "blur(16px) saturate(180%)",
+  WebkitBackdropFilter: "blur(16px) saturate(180%)",
+  border: "1px solid rgba(255,255,255,0.10)",
+  boxShadow: "0 4px 20px rgba(0,0,0,0.35)",
   color: "#39FF14",
-  fontSize: 14,
-  fontWeight: 600,
-  letterSpacing: "-0.01em",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: 6,
+  flexShrink: 0,
 };
 
 export default function QuickActionBar() {
@@ -45,21 +45,14 @@ export default function QuickActionBar() {
       <div
         style={{
           position: "fixed",
-          left: 16,
           right: 16,
-          bottom: "calc(78px + env(safe-area-inset-bottom))",
-          height: 52,
-          borderRadius: 26,
-          background: "rgba(18,18,18,0.82)",
-          backdropFilter: "blur(20px) saturate(180%)",
-          WebkitBackdropFilter: "blur(20px) saturate(180%)",
-          border: "1px solid rgba(255,255,255,0.10)",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
+          bottom: "calc(90px + env(safe-area-inset-bottom))",
+          background: "transparent",
+          border: "none",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "space-between",
-          padding: "6px 8px",
+          gap: 12,
           zIndex: 49,
           opacity: ready ? 1 : 0,
           transform: ready ? "translateY(0)" : "translateY(20px)",
@@ -67,14 +60,11 @@ export default function QuickActionBar() {
             "opacity 400ms cubic-bezier(0.34,1.56,0.64,1) 100ms, transform 400ms cubic-bezier(0.34,1.56,0.64,1) 100ms",
         }}
       >
-        <button type="button" onClick={onLogMeal} style={btnStyle}>
-          <UtensilsCrossed className="h-4 w-4" />
-          <span>+ Log Meal</span>
+        <button type="button" aria-label="Log Meal" onClick={onLogMeal} style={btnStyle}>
+          <UtensilsCrossed className="h-5 w-5" />
         </button>
-        <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.08)" }} />
-        <button type="button" onClick={() => setWorkoutOpen(true)} style={btnStyle}>
-          <Dumbbell className="h-4 w-4" />
-          <span>+ Log Workout</span>
+        <button type="button" aria-label="Log Workout" onClick={() => setWorkoutOpen(true)} style={btnStyle}>
+          <Dumbbell className="h-5 w-5" />
         </button>
       </div>
       <LogExerciseSheet
