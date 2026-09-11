@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Target, ChevronDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { vibrateLight } from "@/lib/haptics";
+import { hapticLight } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 
 type Goals = { calorie_goal: number; protein_goal: number; carb_goal: number; fat_goal: number };
