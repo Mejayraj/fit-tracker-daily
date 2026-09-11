@@ -1,12 +1,11 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useHevy } from "@/hooks/useHevy";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Activity, Apple, Dumbbell, Flame, Plus, Utensils } from "lucide-react";
+import { Activity, Apple, Dumbbell, Flame, Utensils } from "lucide-react";
 import ProfileMenu from "@/components/ProfileMenu";
 import { RingSkeleton, MacrosSkeleton, RowsSkeleton } from "@/components/Skeleton";
 
@@ -14,7 +13,7 @@ type Profile = { display_name: string | null; calorie_goal: number; protein_goal
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const nav = useNavigate();
+  
   const [profile, setProfile] = useState<Profile | null>(null);
   const [foods, setFoods] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
