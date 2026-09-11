@@ -60,14 +60,11 @@ export default function QuickActionBar() {
             "opacity 400ms cubic-bezier(0.34,1.56,0.64,1) 100ms, transform 400ms cubic-bezier(0.34,1.56,0.64,1) 100ms",
         }}
       >
-        <button type="button" onClick={onLogMeal} style={btnStyle}>
-          <UtensilsCrossed className="h-4 w-4" />
-          <span>+ Log Meal</span>
+        <button type="button" aria-label="Log Meal" onClick={onLogMeal} style={btnStyle}>
+          <UtensilsCrossed className="h-5 w-5" />
         </button>
-        <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.08)" }} />
-        <button type="button" onClick={() => setWorkoutOpen(true)} style={btnStyle}>
-          <Dumbbell className="h-4 w-4" />
-          <span>+ Log Workout</span>
+        <button type="button" aria-label="Log Workout" onClick={() => setWorkoutOpen(true)} style={btnStyle}>
+          <Dumbbell className="h-5 w-5" />
         </button>
       </div>
       <LogExerciseSheet
