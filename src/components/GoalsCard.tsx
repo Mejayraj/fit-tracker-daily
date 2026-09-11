@@ -56,7 +56,7 @@ export default function GoalsCard() {
     if (error) return toast.error(error.message);
     setGoals(form);
     setOpen(false);
-    vibrateLight();
+    hapticLight();
     toast.success("Goals updated");
   };
 
