@@ -6,19 +6,19 @@ import LogExerciseSheet from "@/components/train/LogExerciseSheet";
 import { requestLogMeal } from "@/lib/quickActions";
 
 const btnStyle: React.CSSProperties = {
-  width: "48%",
-  height: 40,
-  borderRadius: 20,
-  background: "rgba(57,255,20,0.12)",
-  border: "1px solid rgba(57,255,20,0.25)",
+  width: 52,
+  height: 52,
+  borderRadius: "50%",
+  background: "rgba(255,255,255,0.06)",
+  backdropFilter: "blur(16px) saturate(180%)",
+  WebkitBackdropFilter: "blur(16px) saturate(180%)",
+  border: "1px solid rgba(255,255,255,0.10)",
+  boxShadow: "0 4px 20px rgba(0,0,0,0.35)",
   color: "#39FF14",
-  fontSize: 14,
-  fontWeight: 600,
-  letterSpacing: "-0.01em",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: 6,
+  flexShrink: 0,
 };
 
 export default function QuickActionBar() {
