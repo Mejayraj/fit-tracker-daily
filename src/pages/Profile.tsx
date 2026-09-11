@@ -123,6 +123,8 @@ export default function Profile() {
         </CardContent>
       </Card>
 
+      <GoalsCard />
+
       <ProgressPage />
 
       <Button variant="outline" className="w-full" onClick={async () => { await signOut(); nav("/auth"); }}>
