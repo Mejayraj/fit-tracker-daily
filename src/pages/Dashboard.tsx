@@ -57,7 +57,7 @@ export default function Dashboard() {
       <header className="space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-[28px] font-bold tracking-tight leading-tight">Dashboard</h1>
+            <h1 className="text-[28px] font-bold tracking-tight leading-tight">Home</h1>
             <p className="text-sm text-muted-foreground mt-0.5">
               Hi, {profile?.display_name || "Athlete"} · {format(new Date(), "EEE, MMM d")}
             </p>
@@ -94,9 +94,9 @@ export default function Dashboard() {
             </div>
             {loading ? <MacrosSkeleton /> : (
             <div className="space-y-5">
-              <MacroBar label="PROTEIN" value={protein} goal={profile?.protein_goal ?? 150} color="#39FF14" />
-              <MacroBar label="CARBS" value={carbs} goal={profile?.carb_goal ?? 250} color="#EF9F27" />
-              <MacroBar label="FATS" value={fat} goal={profile?.fat_goal ?? 70} color="#7F77DD" />
+              <MacroBar label="Protein" value={protein} goal={profile?.protein_goal ?? 150} color="#39FF14" />
+              <MacroBar label="Carbs" value={carbs} goal={profile?.carb_goal ?? 250} color="#EF9F27" />
+              <MacroBar label="Fats" value={fat} goal={profile?.fat_goal ?? 70} color="#7F77DD" />
             </div>
             )}
           </CardContent>
