@@ -210,7 +210,7 @@ export default function Food() {
                   key={f.name}
                   type="button"
                   onClick={() => { setSelected(f); setQuery(f.name); }}
-                  className="w-full text-left p-3 hover:bg-secondary flex justify-between items-center"
+                   className="frequent-tap w-full text-left p-3 flex justify-between items-center"
                 >
                   <span className="text-sm font-medium">{f.name}</span>
                   <span className="text-xs text-muted-foreground">{f.calories} kcal · P{f.protein} C{f.carbs} F{f.fat} /100g</span>
@@ -334,7 +334,7 @@ export default function Food() {
               <CardContent className="space-y-2">
                 {items.length === 0 && <p className="text-sm text-muted-foreground">Nothing logged.</p>}
                 {items.map((l) => (
-                  <div key={l.id} className="flex items-center justify-between gap-2 text-sm border-b last:border-0 pb-2 last:pb-0">
+                   <div key={l.id} className="food-log-item frequent-tap flex items-center justify-between gap-2 text-sm border-b last:border-0 pb-2 last:pb-0">
                     <div>
                       <div className="font-medium">{l.food_name}</div>
                       <div className="text-xs text-muted-foreground">{l.portion_grams}g · P{Number(l.protein).toFixed(0)} C{Number(l.carbs).toFixed(0)} F{Number(l.fat).toFixed(0)}</div>
@@ -365,7 +365,7 @@ export default function Food() {
             <button
               key={d.logged_at}
               onClick={() => setDate(d.logged_at)}
-              className="w-full flex justify-between items-center py-2 px-2 rounded hover:bg-secondary text-sm"
+               className="frequent-tap w-full flex justify-between items-center py-2 px-2 rounded text-sm"
             >
               <span>{format(new Date(d.logged_at), "EEE, MMM d")}</span>
               <span className="text-muted-foreground">{d.count} items · <span className="font-semibold text-foreground">{d.calories} kcal</span></span>
@@ -382,7 +382,7 @@ export default function Food() {
 function Stat({ label, value, unit }: { label: string; value: number | string; unit: string }) {
   return (
     <div>
-      <div className="text-2xl font-bold">{value}</div>
+       <div className="text-2xl font-bold tabular-values">{value}</div>
       <div className="text-xs text-muted-foreground">{label} ({unit})</div>
     </div>
   );

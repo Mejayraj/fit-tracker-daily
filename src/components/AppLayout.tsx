@@ -34,7 +34,7 @@ function BottomNav() {
     >
       <div className="glass-nav pointer-events-auto relative mx-4 flex items-center justify-between px-1.5 py-1.5">
         <div
-          className="nav-pill pointer-events-none absolute left-1.5 top-1.5 bottom-1.5 rounded-[28px] bg-primary/15"
+          className="nav-pill pointer-events-none absolute left-1.5 top-1.5 bottom-1.5 rounded-[34px] bg-primary/15"
           style={{
             width: `calc((100% - 12px) / ${tabs.length})`,
             transform: `translateX(${activeIndex * 100}%)`,
@@ -47,13 +47,15 @@ function BottomNav() {
             end={t.end}
             className={({ isActive }) =>
               cn(
-                "relative z-10 flex flex-1 flex-col items-center gap-0.5 rounded-[28px] px-1 py-2 text-[11px] font-medium transition-colors",
-                isActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                "nav-tab frequent-tap relative z-10 flex flex-1 flex-col items-center gap-0.5 rounded-[34px] px-1 py-2 text-[11px] font-medium",
+                isActive ? "text-primary" : "text-muted-foreground",
               )
             }
           >
-            <t.icon className="h-[18px] w-[18px]" />
-            <span className="leading-none">{t.label}</span>
+            <span className="optical-up flex flex-col items-center gap-0.5">
+              <t.icon className="h-[18px] w-[18px]" />
+              <span className="leading-none">{t.label}</span>
+            </span>
           </NavLink>
         ))}
       </div>

@@ -225,7 +225,7 @@ export default function Workouts({
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => setShowBuilder(true)}
-            className="glass-surface hover:bg-white/[0.07] p-4 flex flex-col items-center justify-center gap-2 aspect-[1.4]"
+             className="workout-list-item frequent-tap glass-surface p-4 flex flex-col items-center justify-center gap-2 aspect-[1.4]"
           >
             <ClipboardList className="h-6 w-6 text-primary" />
             <span className="text-sm font-medium">New Routine</span>
@@ -271,7 +271,7 @@ export default function Workouts({
             </div>
           )}
           {hevyToday.map((w) => (
-            <div key={`hevy-${w.id}`} className="flex items-center justify-between gap-2 glass-surface px-3 py-3">
+             <div key={`hevy-${w.id}`} className="workout-list-item frequent-tap flex items-center justify-between gap-2 glass-surface px-3 py-3">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="h-9 w-9 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0">
                   <Dumbbell className="h-4 w-4" />
@@ -289,7 +289,7 @@ export default function Workouts({
           {stravaToday.map((a) => {
             const Icon = sportIcon(a.sport_type);
             return (
-              <div key={`strava-${a.id}`} className="flex items-center justify-between gap-2 glass-surface px-3 py-3">
+               <div key={`strava-${a.id}`} className="workout-list-item frequent-tap flex items-center justify-between gap-2 glass-surface px-3 py-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="h-9 w-9 rounded-lg bg-[hsl(16,100%,50%)]/15 text-[hsl(16,100%,50%)] flex items-center justify-center shrink-0">
                     <Icon className="h-4 w-4" />
@@ -308,7 +308,7 @@ export default function Workouts({
             );
           })}
           {list.map((w) => (
-            <div key={w.id} className="flex items-center justify-between gap-2 glass-surface px-3 py-3">
+             <div key={w.id} className="workout-list-item frequent-tap flex items-center justify-between gap-2 glass-surface px-3 py-3">
               <div className="min-w-0">
                 <div className="font-medium text-sm truncate">{w.exercise_name}</div>
                 <div className="text-xs text-muted-foreground capitalize truncate">
