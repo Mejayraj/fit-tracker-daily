@@ -226,7 +226,7 @@ export default function BarcodeScanner({ date, onLogged }: { date: string; onLog
         <div className="glass-surface p-3 space-y-3">
           <div className="flex gap-3">
             {product.imageUrl && (
-              <img src={product.imageUrl} alt={product.name} className="h-16 w-16 rounded-md object-cover bg-secondary" />
+              <img src={product.imageUrl} alt={product.name} className="image-outline h-16 w-16 rounded object-cover bg-secondary" />
             )}
             <div className="flex-1 min-w-0">
               <div className="font-medium text-sm leading-tight">{product.name}</div>

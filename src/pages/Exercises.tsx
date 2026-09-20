@@ -119,7 +119,7 @@ export default function Exercises({ onLogged }: { onLogged?: () => void } = {}) 
               key={g}
               onClick={() => setGroup(g)}
               className={cn(
-                "rounded-full px-3.5 py-1.5 text-xs font-medium border transition-colors whitespace-nowrap",
+                "frequent-tap rounded-full px-3.5 py-1.5 text-xs font-medium border whitespace-nowrap",
                 group === g
                   ? "bg-primary/15 text-primary border-primary/30"
                   : "bg-secondary/50 text-muted-foreground border-transparent",
@@ -152,10 +152,10 @@ export default function Exercises({ onLogged }: { onLogged?: () => void } = {}) 
           <button
             key={ex.id}
             onClick={() => setSelected(ex)}
-            className="text-left glass-surface hover:bg-white/[0.07] p-4 transition"
+            className="exercise-list-item frequent-tap text-left glass-surface !rounded-2xl p-3"
           >
             <div className="flex items-start gap-3">
-              <div className="rounded-lg bg-primary/15 p-2"><Dumbbell className="h-4 w-4 text-primary" /></div>
+               <div className="rounded bg-primary/15 p-2"><Dumbbell className="h-4 w-4 text-primary" /></div>
               <div className="min-w-0 flex-1">
                 <div className="font-semibold truncate">{ex.name}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">{ex.category}</div>

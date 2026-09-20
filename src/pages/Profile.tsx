@@ -84,8 +84,8 @@ export default function Profile() {
 
       <Card>
         <CardContent className="p-5 flex items-center gap-4">
-          <div className="h-14 w-14 rounded-full bg-secondary border-2 border-primary flex items-center justify-center shadow-[0_6px_20px_hsl(var(--primary)/0.35)]">
-            <span className="text-lg font-semibold">{initial}</span>
+          <div className="image-outline h-14 w-14 rounded-full bg-secondary border-2 border-primary flex items-center justify-center shadow-[0_6px_20px_hsl(var(--primary)/0.35)]">
+            <span className="optical-up text-lg font-semibold">{initial}</span>
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 text-base font-semibold truncate"><User className="h-4 w-4" /> {displayName}</div>
