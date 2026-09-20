@@ -46,13 +46,13 @@ export default function TrainHistory({
       className="space-y-4"
     >
       <div
-        className="flex items-center justify-center gap-2 text-xs text-muted-foreground overflow-hidden transition-[height] duration-150"
+        className="flex items-center justify-center gap-2 text-xs text-muted-foreground overflow-hidden"
         style={{ height: syncing ? 32 : pull }}
       >
         {syncing ? (
           <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Syncing from Hevy…</>
         ) : pull > 0 ? (
-          <><ArrowDown className={`h-3.5 w-3.5 transition-transform ${pull > 55 ? "rotate-180" : ""}`} />
+          <><ArrowDown className={`h-3.5 w-3.5 ${pull > 55 ? "rotate-180" : ""}`} />
             {pull > 55 ? "Release to sync" : "Pull to sync"}</>
         ) : null}
       </div>

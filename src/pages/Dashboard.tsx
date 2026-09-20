@@ -225,7 +225,7 @@ function MacroBar({ label, value, goal, color }: { label: string; value: number;
       <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
         <div
           className="h-full rounded-full"
-          style={{ width: `${pct}%`, transition: "width 0.5s", background: color, boxShadow: `0 0 12px ${color}80` }}
+          style={{ width: `${pct}%`, background: color, boxShadow: `0 0 12px ${color}80` }}
         />
       </div>
     </div>

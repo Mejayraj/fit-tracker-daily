@@ -342,7 +342,7 @@ export default function Workouts({
             {activeRoutine?.exercises.map((ex, i) => {
               const done = !!doneIdx[i];
               return (
-                <div key={i} className={`rounded-lg p-3 border transition ${done ? "bg-primary/10 border-primary/40" : "bg-secondary/40 border-border/60"}`}>
+                <div key={i} className={`rounded-lg p-3 border ${done ? "bg-primary/10 border-primary/40" : "bg-secondary/40 border-border/60"}`}>
                   <div className="flex items-start gap-3">
                     <Checkbox checked={done} onCheckedChange={() => !done && logRoutineExercise(i, ex)} className="mt-1" />
                     <div className="flex-1 min-w-0">

@@ -226,7 +226,7 @@ export default function Food() {
                 <button
                   type="button"
                   onClick={() => setCustomMode((v) => !v)}
-                  className="text-xs text-primary hover:underline"
+                  className="frequent-tap text-xs text-primary"
                 >
                   {customMode ? "Cancel custom" : "+ Custom food"}
                 </button>
